@@ -35,13 +35,13 @@ class OBDMgr
         void InitBTTask(void *param);
         bool ConnectOBD(BluetoothSerial &bt_serial);
         void UpdateOBDData(uint16_t &coolant_temp, uint16_t &voltage_level, uint16_t &rpm_value);
-        void QueryRPM(uint16_t &rpm_value);
         ObdData* GetObdData(void);
         void SetCoolantTemp(uint16_t val);
         void SetVoltageLevel(uint16_t val);
         void SetRPM(uint16_t val);
         
-        static void Query30SecData(uint16_t &voltage_level, uint16_t &coolant_temp);
+        static void QueryRPM(void *param);
+        static void Query30SecData(void *param);
 };
 
 #endif

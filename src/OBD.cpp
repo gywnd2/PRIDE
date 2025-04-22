@@ -82,39 +82,60 @@ void OBDMgr::QueryVoltage(uint16_t &voltage_level)
     }
 }
 
-void OBDMgr::Query30SecData(uint16_t &voltage_level, uint16_t &coolant_temp)
+void OBDMgr::Query30SecData(void *param)
 {
-    QueryVoltage(voltage_level);
-    QueryCoolant(coolant_temp);
+    OBDMgr* self = static_cast<OBDMgr*>(param);
+    ObdData* data = NULL;
+
+    while(1)
+    {
+        data = self->GetObdData();
+        self->QueryVoltage(data->voltage);
+        self->QueryCoolant(data->coolant);
+    
+        vTaskDelay(30000 / portTICK_PERIOD_MS);
+    }
+
 }
 
-void OBDMgr::QueryRPM(uint16_t &rpm_value)
+void OBDMgr::QueryRPM(void *param)
 {
-    int rpm_retry_count = 0;
-    while(true)
+    OBDMgr* self = static_cast<OBDMgr*>(param);
+    ObdData* data = NULL;
+
+    while(1)
     {
-        float rpm = myELM327.rpm();
-        if(myELM327.nb_rx_state == ELM_SUCCESS)
+        int rpm_retry_count = 0;
+        while(true)
         {
-            rpm_retry_count = 0;
-            rpm_value = (uint16_t)rpm;
-            break;
-        }
-        else if(myELM327.nb_rx_state == ELM_NO_DATA)
-        {
-            if(rpm_retry_count == 2)
+            data = self->GetObdData();
+
+            float rpm = self->myELM327.rpm();
+            if(self->myELM327.nb_rx_state == ELM_SUCCESS)
             {
-                rpm_value = 9999;
+                rpm_retry_count = 0;
+                data->rpm = (uint16_t)rpm;
                 break;
             }
-            else
+            else if(self->myELM327.nb_rx_state == ELM_NO_DATA)
             {
-                rpm_retry_count++;
+                if(rpm_retry_count == 2)
+                {
+                    data->rpm = 9999;
+                    break;
+                }
+                else
+                {
+                    rpm_retry_count++;
+                }
             }
+
+            delay(10);
         }
 
-        delay(10);
+        vTaskDelay(3000 / portTICK_PERIOD_MS);
     }
+    
 }
 
 ObdData* OBDMgr::GetObdData(void)
