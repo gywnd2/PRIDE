@@ -1,35 +1,30 @@
 #include <Widget.h>
 
-void WidgetMgr::InitBTTask(void *param)
-{
-    WidgetMgr* self = static_cast<WidgetMgr*>(param);
-    esp_task_wdt_add(NULL);
-    esp_task_wdt_init(60, true);
-    esp_task_wdt_reset();
+// void WidgetMgr::InitBTTask(void *param)
+// {
+//     WidgetMgr* self = static_cast<WidgetMgr*>(param);
+//     esp_task_wdt_add(NULL);
+//     esp_task_wdt_init(60, true);
+//     esp_task_wdt_reset();
 
-    UpdateOBDStatus("BT Init success");
+//     UpdateOBDStatus("BT Init success");
 
-    // Bluetooth 초기화 후 지연
-    esp_task_wdt_reset(); 
-    vTaskDelay(pdMS_TO_TICKS(100));
+//     // Bluetooth 초기화 후 지연
+//     esp_task_wdt_reset(); 
+//     vTaskDelay(pdMS_TO_TICKS(100));
 
-    if(NotifyOBDConnect())
-    {
-        esp_task_wdt_reset();
-        vTaskDelay(pdMS_TO_TICKS(100));
-        UpdateGauge();
-        /*
-        lv_timer_create(updateGauge, 30000, NULL);
-        lv_timer_create(checkGoodbyeCondition, 3000, NULL);
-        */
-    }
+//     if(NotifyOBDConnect())
+//     {
+//         esp_task_wdt_reset();
+//         vTaskDelay(pdMS_TO_TICKS(100));
+//     }
 
 
-    esp_task_wdt_reset(); 
-    vTaskDelay(pdMS_TO_TICKS(100));
-    esp_task_wdt_delete(NULL);
-    vTaskDelete(NULL);
-}
+//     esp_task_wdt_reset(); 
+//     vTaskDelay(pdMS_TO_TICKS(100));
+//     esp_task_wdt_delete(NULL);
+//     vTaskDelete(NULL);
+// }
 
 float WidgetMgr::get_cpu_usage(void)
 {
@@ -75,20 +70,16 @@ float WidgetMgr::get_ram_usage(void)
     return ram_usage;
 }
 
-void WidgetMgr::update_cpu_usage()
+void WidgetMgr::update_usage()
 {
-    char buff[6]; // "100.0%"를 저장하려면 6바이트 필요
-    sprintf(buff, "%.1f%%", get_cpu_usage());
+    char cpu[6]; // "100.0%"를 저장하려면 6바이트 필요
+    sprintf(cpu, "%.1f%%", get_cpu_usage());
 
-    lv_label_set_text(ui_cpu_usage, buff);
-}
+    char ram[6]; // "100.0%"를 저장하려면 6바이트 필요
+    sprintf(ram, "%.1f%%", get_ram_usage());
 
-void WidgetMgr::update_ram_usage()
-{
-    char buff[6]; // "100.0%"를 저장하려면 6바이트 필요
-    sprintf(buff, "%.1f%%", get_ram_usage());
-
-    lv_label_set_text(ui_ram_usage, buff);
+    lv_label_set_text(ui_cpu_usage, cpu);
+    lv_label_set_text(ui_ram_usage, ram);
 }
 
 void WidgetMgr::measure_task_time_start()
@@ -102,15 +93,16 @@ void WidgetMgr::measure_task_time_end()
     active_task_time += (current_time - last_loop_time);
 }
 
-void WidgetMgr::initWidget(bool bt_status, TaskHandle_t *bt_handler, TaskHandle_t *usage_handler)
+void WidgetMgr::initWidget(DisplayMgr &disp, bool bt_status, TaskHandle_t *bt_handler, TaskHandle_t *usage_handler)
 {
+    display = &disp;
     if(not bt_status)
     {
-        UpdateOBDStatus("BT Init failed");
+        display->UpdateOBDStatus("BT Init failed");
         return;
     }
 
-    xTaskCreate(InitBTTask, "initBTTask", 4096, this, 1, bt_handler);
+    // xTaskCreate(InitBTTask, "initBTTask", 4096, this, 1, bt_handler);
     Serial.println("[WidgetMgr] : Init BT <-> OBD asynchronously");
     xTaskCreate(CalculateCpuRamUsageTask, "CalCpuRam", 4096, this, 2, usage_handler);
     Serial.println("[WidgetMgr] : Create CPU/RAM usage calcultaion task by 3sec period");
@@ -122,8 +114,7 @@ void WidgetMgr::CalculateCpuRamUsageTask(void *param)
     while (true)
     {
         self->measure_task_time_start();
-        self->update_cpu_usage();
-        self->update_ram_usage();
+        self->update_usage();
         self->measure_task_time_end();
 
         vTaskDelay(pdMS_TO_TICKS(3000)); // 3초마다 업데이트

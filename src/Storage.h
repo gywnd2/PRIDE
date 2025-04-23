@@ -1,7 +1,6 @@
 #ifndef __STORAGE__
 #define __STORAGE__
 
-#include <pride_common.h>
 #include "EEPROM.h"
 
 class StorageMgr
@@ -18,7 +17,7 @@ class StorageMgr
         }
 
         bool InitStorage(void);
-        int UpdateSplashEEPROM(void);
+        void UpdateSplashEEPROM(void);
         int GetSplashCount(void);
 };
 

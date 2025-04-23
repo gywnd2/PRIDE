@@ -1,23 +1,46 @@
 #include <Display.h>
 #include <lvgl.h>
 
-bool DisplayMgr::initDisplay(int splash_count)
+void DisplayMgr::initDisplay(StorageMgr &storage)
 {
     tft.begin();          /* TFT init */
+    Serial.println("[DisplayMgr] TFT initialized.");
     tft.setRotation( 3 ); /* Landscape orientation, flipped */
+    Serial.println("[DisplayMgr] TFT rotation set to 3.");
 
     lv_init();
+    Serial.println("[DisplayMgr] LVGL initialized.");
 
     disp = lv_display_create(SCREEN_WIDTH, SCREEN_HEIGHT);
+    Serial.println("[DisplayMgr] LVGL display created.");
     lv_display_set_buffers(disp, buf, NULL, SCREENBUFFER_SIZE_PIXELS * sizeof(lv_color_t), LV_DISPLAY_RENDER_MODE_PARTIAL);
+    Serial.println("[DisplayMgr] LVGL display buffers set.");
     lv_display_set_flush_cb(disp, flush_display);
+    Serial.println("[DisplayMgr] LVGL display flush callback set.");
 
     indev = lv_indev_create();
+    Serial.println("[DisplayMgr] LVGL input device created.");
+
     lv_indev_set_type( indev, LV_INDEV_TYPE_POINTER );
+    Serial.println("[DisplayMgr] LVGL input device type set to pointer.");
 
     lv_tick_set_cb( my_tick_get_cb );
+    Serial.println("[DisplayMgr] LVGL tick callback set.");
 
-    ui_init(splash_count);
+    ui_init(storage.GetSplashCount());
+    Serial.println("[DisplayMgr] UI initialized."); 
+
+    xTaskCreate(updateDisplay, "UpdateDisplay", 8192, this, 3, NULL);
+    Serial.println("[DisplayMgr] UpdateDisplay task created.");
+}
+
+void DisplayMgr::updateDisplay(void *param)
+{
+    while(true)
+    {
+        lv_timer_handler();
+        vTaskDelay(pdMS_TO_TICKS(5));
+    }
 }
 
 void DisplayMgr::flush_display(lv_display_t *disp, const lv_area_t *area, uint8_t *pixelmap)

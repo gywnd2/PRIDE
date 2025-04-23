@@ -1,45 +1,53 @@
 
 #include <OBD.h>
 
-bool OBDMgr::InitOBD(void)
+bool OBDMgr::InitOBD(BluetoothSerial &serial)
 {
-    
+    bt = &serial;
+    Serial.println("[OBDMgr] Init OBD");
+    xTaskCreate(ConnectOBD, "ConnectOBD", 4096, this, 3, NULL);
 }
 
-bool OBDMgr::ConnectOBD(BluetoothSerial &bt_serial)
-{    
-    bool bt_connected = bt_serial.connect(obd_addr);
-    if(bt_connected)
-    {
-        if(myELM327.begin(bt_serial, true, 2000))
-        {
-            return true;
-        }
-        else
-        { 
-            UpdateOBDStatus("OBD Service Failed");
-        }
-    }
-    else
-    {
-        UpdateOBDStatus("BT Connect Failed");
-    }
+void OBDMgr::ConnectOBD(void *param)
+{   
+    OBDMgr* self = static_cast<OBDMgr*>(param);
+    Serial.println("[OBDMgr] Connect OBD task started");
 
-    return false;
-}
+    // esp_task_wdt_add(NULL);
+    // esp_task_wdt_init(60, true);
+    // esp_task_wdt_reset();
 
-void OBDMgr::UpdateOBDData(uint16_t &coolant_temp, uint16_t &voltage_level, uint16_t &rpm_value)
-{
-    // 30sec task
-    QueryCoolant(coolant_temp);
-    QueryVoltage(voltage_level);
+    UpdateOBDStatus("BT Init success");
 
-    // 3sec task
-    QueryRPM(rpm_value);
-    
-    if(myELM327.nb_rx_state == ELM_SUCCESS) UpdateOBDStatus("OBD Connected");
-    else if(myELM327.nb_rx_state == ELM_NO_DATA) UpdateOBDStatus("Good bye!");
-    else UpdateOBDStatus("OBD Disconnected");
+    // Bluetooth 초기화 후 지연
+    // esp_task_wdt_reset(); 
+    // vTaskDelay(pdMS_TO_TICKS(100));
+    // Serial.println("[OBDMgr] BT delay success");
+
+    // if(self->bt->connect(self->obd_addr))
+    // {
+    //     Serial.println("[OBDMgr] BT Connect success");
+    //     if(self->myELM327.begin(*(self->bt), true, 2000))
+    //     {
+    //         Serial.println("[OBDMgr] OBD Service success");
+    //         xTaskCreate(Query30SecData, "Query30SecData", 4096, self, 3, &self->query_coolant_voltage_handler);
+    //         Serial.println("[OBDMgr] Query30SecData task created");
+    //         xTaskCreate(QueryRPM, "Query3SecRPM", 4096, self, 3, &self->query_rpm);
+    //         Serial.println("[OBDMgr] QueryRPM task created");
+    //     }
+    //     else
+    //     {   
+    //         Serial.println("[OBDMgr] OBD Service Failed");
+    //         UpdateOBDStatus("OBD Service Failed");
+    //     }
+    // }
+    // else
+    // {
+    //    Serial.println("[OBDMgr] BT Connect Failed");
+    //    UpdateOBDStatus("BT Connect Failed");
+    // }
+
+    vTaskDelete(NULL);
 }
 
 void OBDMgr::QueryCoolant(uint16_t &coolant_temp)
@@ -50,7 +58,7 @@ void OBDMgr::QueryCoolant(uint16_t &coolant_temp)
         if(myELM327.nb_rx_state == ELM_SUCCESS)
         {
             coolant_temp = (uint16_t)coolant;
-            Serial.println("coolant level set to "+(String)coolant_temp);
+            Serial.println("[OBDMgr] coolant level set to "+(String)coolant_temp);
             break;
         }
         else if(myELM327.nb_rx_state == ELM_NO_DATA)
@@ -70,7 +78,7 @@ void OBDMgr::QueryVoltage(uint16_t &voltage_level)
         if(myELM327.nb_rx_state == ELM_SUCCESS)
         {
             voltage_level = (uint16_t)voltage;
-            Serial.println("voltage level set to "+(String)voltage_level);
+            Serial.println("[OBDMgr] voltage level set to "+(String)voltage_level);
             break;
         }
         else if(myELM327.nb_rx_state == ELM_NO_DATA)
@@ -85,13 +93,13 @@ void OBDMgr::QueryVoltage(uint16_t &voltage_level)
 void OBDMgr::Query30SecData(void *param)
 {
     OBDMgr* self = static_cast<OBDMgr*>(param);
-    ObdData* data = NULL;
+    ObdData data;
 
     while(1)
     {
         data = self->GetObdData();
-        self->QueryVoltage(data->voltage);
-        self->QueryCoolant(data->coolant);
+        self->QueryVoltage(data.voltage);
+        self->QueryCoolant(data.coolant);
     
         vTaskDelay(30000 / portTICK_PERIOD_MS);
     }
@@ -101,7 +109,7 @@ void OBDMgr::Query30SecData(void *param)
 void OBDMgr::QueryRPM(void *param)
 {
     OBDMgr* self = static_cast<OBDMgr*>(param);
-    ObdData* data = NULL;
+    ObdData data;
 
     while(1)
     {
@@ -114,14 +122,15 @@ void OBDMgr::QueryRPM(void *param)
             if(self->myELM327.nb_rx_state == ELM_SUCCESS)
             {
                 rpm_retry_count = 0;
-                data->rpm = (uint16_t)rpm;
+                data.rpm = (uint16_t)rpm;
                 break;
             }
             else if(self->myELM327.nb_rx_state == ELM_NO_DATA)
             {
                 if(rpm_retry_count == 2)
                 {
-                    data->rpm = 9999;
+                    data.rpm = 9999;
+                    Serial.println("[OBDMgr] RPM response is invalid. Retry Count "+String(rpm_retry_count));
                     break;
                 }
                 else
@@ -138,9 +147,9 @@ void OBDMgr::QueryRPM(void *param)
     
 }
 
-ObdData* OBDMgr::GetObdData(void)
+ObdData OBDMgr::GetObdData(void)
 {
-    return &obd_data;
+    return obd_data;
 }
 
 void OBDMgr::SetCoolantTemp(uint16_t val)

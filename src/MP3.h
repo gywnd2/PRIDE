@@ -8,8 +8,6 @@
 #define SOUND_VOLUME 25
 #define DFPLAYER_RX 27
 #define DFPLAYER_TX 22
-#define WELCOME_TRACK_NUM 1
-#define GOODBYE_TRACK_NUM 2
 
 class Mp3Mgr
 {
@@ -29,7 +27,7 @@ class Mp3Mgr
         }
         
         bool initMp3(void);
-        void PlayWelcome(void);
+        void PlaySound(int track_num);
 };
 
 #endif

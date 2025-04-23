@@ -1,26 +1,29 @@
 #ifndef __OBD__
 #define __OBD__
 
-#include <pride_common.h>
+#include <Arduino.h>
 #include <ELMduino.h>
+#include <BluetoothSerial.h>
+#include <DataType.h>
+#include <pride_common.h>
+#include "esp_task_wdt.h"
 
 #define RPM_REQ_RETRY_MAX 2
-
-struct ObdData {
-    uint16_t coolant;
-    uint16_t voltage;
-    uint16_t rpm;
-};
 
 class OBDMgr
 {
     private:
+        BluetoothSerial *bt;
         ELM327 myELM327;
-        String obd_name = "OBDII";
-        uint8_t obd_addr[6]={0x01, 0x23, 0x45, 0x67, 0x89, 0xba};
         ObdData obd_data;
+        const String obd_name = "OBDII";
+        uint8_t obd_addr[6]={0x01, 0x23, 0x45, 0x67, 0x89, 0xba};
+
         void QueryCoolant(uint16_t &coolant_temp);
         void QueryVoltage(uint16_t &voltage_level);
+        
+        TaskHandle_t query_coolant_voltage_handler = NULL;
+        TaskHandle_t query_rpm = NULL;
     public:
         OBDMgr()
         {
@@ -31,15 +34,14 @@ class OBDMgr
             Serial.println("~~~~OBDMgr");
         }
         
-        bool InitOBD(void);
+        bool InitOBD(BluetoothSerial &serial);
         void InitBTTask(void *param);
-        bool ConnectOBD(BluetoothSerial &bt_serial);
-        void UpdateOBDData(uint16_t &coolant_temp, uint16_t &voltage_level, uint16_t &rpm_value);
-        ObdData* GetObdData(void);
+        ObdData GetObdData(void);
         void SetCoolantTemp(uint16_t val);
         void SetVoltageLevel(uint16_t val);
         void SetRPM(uint16_t val);
         
+        static void ConnectOBD(void *param);
         static void QueryRPM(void *param);
         static void Query30SecData(void *param);
 };

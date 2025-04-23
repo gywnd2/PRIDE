@@ -1,12 +1,17 @@
 #ifndef __WIDGET__
 #define __WIDGET__
 
-#include <pride_common.h>
+#include <Arduino.h>
+#include <lvgl.h>
+#include <ui.h>
 #include "esp_task_wdt.h"
+#include <Display.h>
 
 class WidgetMgr
 {
     private:
+        DisplayMgr *display;
+
         uint32_t last_loop_time;
         uint32_t active_task_time;
         uint16_t voltage_level;
@@ -14,12 +19,11 @@ class WidgetMgr
 
         float get_cpu_usage(void);
         float get_ram_usage(void);
-        void update_cpu_usage();
-        void update_ram_usage();
+        void update_usage();
         void measure_task_time_start();
         void measure_task_time_end();
         
-        static void InitBTTask(void *param);
+        // static void InitBTTask(void *param);
         static void CalculateCpuRamUsageTask(void *param);
 
     public:
@@ -35,7 +39,7 @@ class WidgetMgr
             Serial.println("~~~~WidgetMgr");
         }
 
-        void initWidget(bool bt_status, TaskHandle_t *bt_handler, TaskHandle_t *usage_handler);
+        void initWidget(DisplayMgr &disp, bool bt_status, TaskHandle_t *bt_handler, TaskHandle_t *usage_handler);
         bool isBTInit(void);
 };
 

@@ -6,33 +6,29 @@ bool Mp3Mgr::initMp3(void)
 
     if(!dfpSerial.available())
     {
-        Serial.println("Failed to initialize dfp serial.");
+        Serial.println("[Mp3Mgr] Failed to initialize dfp serial.");
     }
     else
     {
-        Serial.println("Initialized dfp serial successfully.");
+        Serial.println("[Mp3Mgr] Initialized dfp serial successfully.");
     }
 
     if(!dfPlayer.begin(dfpSerial))
     {
-        Serial.println("Failed to initiailize DFPlayer Mini!");
+        Serial.println("[Mp3Mgr] Failed to initiailize DFPlayer Mini!");
     }
     else
     {
-        Serial.println("Initialized DFPlayer Mini successfully.");
+        Serial.println("[Mp3Mgr] Initialized DFPlayer Mini successfully.");
         dfPlayer.volume(SOUND_VOLUME);
     }
 
     return true;
 }
 
-void Mp3Mgr::PlayWelcome(void)
+void Mp3Mgr::PlaySound(int track_num)
 {
-    static bool welcome_played = false;
-    if(!welcome_played)
-    {
-        dfPlayer.play(WELCOME_TRACK_NUM);
-        delay(6000);
-        welcome_played = true;
-    }
+    Serial.println("[Mp3Mgr] Play track num "+(String)track_num);
+    dfPlayer.play(track_num);
+    delay(6000);
 }
