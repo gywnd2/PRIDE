@@ -26,7 +26,7 @@ class Mp3Mgr
             Serial.println("~~~~Mp3Mgr");
         }
         
-        bool initMp3(void);
+        bool InitMp3(void);
         void PlaySound(int track_num);
 };
 

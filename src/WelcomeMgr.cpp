@@ -1,11 +1,9 @@
 #include <WelcomeMgr.h>
 
-void WelcomeMgr::InitWelcome(OBDMgr &obd_mgr, Mp3Mgr &dfp_mgr)
+void WelcomeMgr::InitWelcome(void)
 {
-    obd = &obd_mgr;
-    dfp = &dfp_mgr;
     Serial.println("[WelcomeMgr] Init");
-    dfp->PlaySound(WELCOME_TRACK_NUM);
+    dfp.PlaySound(WELCOME_TRACK_NUM);
 }
 
 void WelcomeMgr::CheckGoodbyeCondition(void)
@@ -13,7 +11,7 @@ void WelcomeMgr::CheckGoodbyeCondition(void)
     static bool goodbye_played = false;
     if(goodbye_played) return;
 
-    ObdData data = obd->GetObdData();
+    ObdData data = obd.GetObdData();
 
     if(100 <= data.rpm && data.rpm <= 7000) 
     {

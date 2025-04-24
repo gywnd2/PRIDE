@@ -1,13 +1,17 @@
 #include <Display.h>
 #include <lvgl.h>
 
-void DisplayMgr::initDisplay(StorageMgr &storage)
+void DisplayMgr::InitDisplay()
 {
     tft.begin();          /* TFT init */
     Serial.println("[DisplayMgr] TFT initialized.");
     tft.setRotation( 3 ); /* Landscape orientation, flipped */
     Serial.println("[DisplayMgr] TFT rotation set to 3.");
+    ///////////////////
 
+
+
+    ////////////////////
     lv_init();
     Serial.println("[DisplayMgr] LVGL initialized.");
 
@@ -27,11 +31,13 @@ void DisplayMgr::initDisplay(StorageMgr &storage)
     lv_tick_set_cb( my_tick_get_cb );
     Serial.println("[DisplayMgr] LVGL tick callback set.");
 
-    ui_init(storage.GetSplashCount());
+    ui_init();
     Serial.println("[DisplayMgr] UI initialized."); 
 
     xTaskCreate(updateDisplay, "UpdateDisplay", 8192, this, 3, NULL);
     Serial.println("[DisplayMgr] UpdateDisplay task created.");
+
+
 }
 
 void DisplayMgr::updateDisplay(void *param)

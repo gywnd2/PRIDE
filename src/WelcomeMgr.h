@@ -2,14 +2,12 @@
 #define __WELCOME__
 
 #include <Arduino.h>
-#include <DataType.h>
-#include <OBD.h>
+#include <Global.h>
+#include <MP3.h>
 
 class WelcomeMgr
 {
     private:
-        OBDMgr *obd;
-        Mp3Mgr *dfp;
 
     public:
         WelcomeMgr()             
@@ -21,7 +19,7 @@ class WelcomeMgr
             Serial.println("~~~~WelcomeMgr");
         }
 
-        void InitWelcome(OBDMgr &obd_mgr, Mp3Mgr &dfp_mgr);
+        void InitWelcome(void);
         void CheckGoodbyeCondition(void);
 };
 

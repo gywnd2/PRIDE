@@ -1,6 +1,6 @@
 #include <MP3.h>
 
-bool Mp3Mgr::initMp3(void)
+bool Mp3Mgr::InitMp3(void)
 {
     dfpSerial.begin(9600, SERIAL_8N1, DFPLAYER_RX, DFPLAYER_TX);
 

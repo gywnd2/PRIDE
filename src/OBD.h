@@ -2,10 +2,10 @@
 #define __OBD__
 
 #include <Arduino.h>
+#include <pride_common.h>
 #include <ELMduino.h>
 #include <BluetoothSerial.h>
-#include <DataType.h>
-#include <pride_common.h>
+#include <Data.h>
 #include "esp_task_wdt.h"
 
 #define RPM_REQ_RETRY_MAX 2
@@ -34,14 +34,13 @@ class OBDMgr
             Serial.println("~~~~OBDMgr");
         }
         
-        bool InitOBD(BluetoothSerial &serial);
+        void InitOBD(void);
         void InitBTTask(void *param);
         ObdData GetObdData(void);
         void SetCoolantTemp(uint16_t val);
         void SetVoltageLevel(uint16_t val);
         void SetRPM(uint16_t val);
         
-        static void ConnectOBD(void *param);
         static void QueryRPM(void *param);
         static void Query30SecData(void *param);
 };

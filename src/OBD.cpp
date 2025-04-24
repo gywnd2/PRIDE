@@ -1,53 +1,45 @@
 
 #include <OBD.h>
 
-bool OBDMgr::InitOBD(BluetoothSerial &serial)
-{
-    bt = &serial;
-    Serial.println("[OBDMgr] Init OBD");
-    xTaskCreate(ConnectOBD, "ConnectOBD", 4096, this, 3, NULL);
-}
-
-void OBDMgr::ConnectOBD(void *param)
+void OBDMgr::InitOBD(void)
 {   
-    OBDMgr* self = static_cast<OBDMgr*>(param);
     Serial.println("[OBDMgr] Connect OBD task started");
 
-    // esp_task_wdt_add(NULL);
-    // esp_task_wdt_init(60, true);
-    // esp_task_wdt_reset();
+    esp_task_wdt_add(NULL);
+    esp_task_wdt_init(60, true);
+    esp_task_wdt_reset();
 
     UpdateOBDStatus("BT Init success");
 
     // Bluetooth 초기화 후 지연
-    // esp_task_wdt_reset(); 
-    // vTaskDelay(pdMS_TO_TICKS(100));
-    // Serial.println("[OBDMgr] BT delay success");
+    esp_task_wdt_reset(); 
+    vTaskDelay(pdMS_TO_TICKS(100));
+    Serial.println("[OBDMgr] BT delay success");
 
-    // if(self->bt->connect(self->obd_addr))
-    // {
-    //     Serial.println("[OBDMgr] BT Connect success");
-    //     if(self->myELM327.begin(*(self->bt), true, 2000))
-    //     {
-    //         Serial.println("[OBDMgr] OBD Service success");
-    //         xTaskCreate(Query30SecData, "Query30SecData", 4096, self, 3, &self->query_coolant_voltage_handler);
-    //         Serial.println("[OBDMgr] Query30SecData task created");
-    //         xTaskCreate(QueryRPM, "Query3SecRPM", 4096, self, 3, &self->query_rpm);
-    //         Serial.println("[OBDMgr] QueryRPM task created");
-    //     }
-    //     else
-    //     {   
-    //         Serial.println("[OBDMgr] OBD Service Failed");
-    //         UpdateOBDStatus("OBD Service Failed");
-    //     }
-    // }
-    // else
-    // {
-    //    Serial.println("[OBDMgr] BT Connect Failed");
-    //    UpdateOBDStatus("BT Connect Failed");
-    // }
+    if(NotifyConnectOBD(obd_addr))
+    {
+         Serial.println("[OBDMgr] BT Connect success");
+         if(myELM327.begin(RequestBTSerial(), true, 2000))
+         {
+             Serial.println("[OBDMgr] OBD Service success");
+             //xTaskCreate(Query30SecData, "Query30SecData", 4096, self, 3, &self->query_coolant_voltage_handler);
+             Serial.println("[OBDMgr] Query30SecData task created");
+             //xTaskCreate(QueryRPM, "Query3SecRPM", 4096, self, 3, &self->query_rpm);
+             Serial.println("[OBDMgr] QueryRPM task created");
+         }
+         else
+         {   
+             Serial.println("[OBDMgr] OBD Service Failed");
+             UpdateOBDStatus("OBD Service Failed");
+         }
+    }
+    else
+    {
+        Serial.println("[OBDMgr] BT Connect Failed");
+        UpdateOBDStatus("BT Connect Failed");
+    }
 
-    vTaskDelete(NULL);
+    esp_task_wdt_delete(NULL);
 }
 
 void OBDMgr::QueryCoolant(uint16_t &coolant_temp)

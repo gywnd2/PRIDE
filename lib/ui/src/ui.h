@@ -65,7 +65,7 @@ LV_IMG_DECLARE(ui_img_1638550806);    // assets/voltage (2).png
 LV_IMG_DECLARE(ui_img_716095653);    // assets/gauge_bar (2).png
 
 // UI INIT
-void ui_init(int splash_count);
+void ui_init(void);
 
 #ifdef __cplusplus
 } /*extern "C"*/

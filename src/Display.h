@@ -5,7 +5,8 @@
 #include <lvgl.h>
 #include <TFT_eSPI.h>
 #include <ui.h>
-#include <storage.h>
+#include <Global.h>
+#include <AnimatedGIF.h>
 
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 240
@@ -16,7 +17,7 @@ static TFT_eSPI tft = TFT_eSPI(SCREEN_WIDTH, SCREEN_HEIGHT); // Invoke library, 
 class DisplayMgr
 {
     private:
-        StorageMgr *storage;
+        AnimatedGIF gif;
         lv_disp_t* disp;
         lv_indev_t* indev;
         lv_color_t buf [SCREENBUFFER_SIZE_PIXELS];
@@ -32,11 +33,12 @@ class DisplayMgr
             Serial.println("~~~~DisplayMgr");
         }
 
-        void initDisplay(StorageMgr &storage);
+        void InitDisplay(void);
         static void updateDisplay(void *param);
         static void flush_display(lv_display_t *disp, const lv_area_t *area, uint8_t *pixelmap);
         static uint32_t my_tick_get_cb(void);
         void UpdateOBDStatus(char *status);
+
 };
 
 #endif

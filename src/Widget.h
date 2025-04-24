@@ -5,13 +5,11 @@
 #include <lvgl.h>
 #include <ui.h>
 #include "esp_task_wdt.h"
-#include <Display.h>
+#include <pride_common.h>
 
 class WidgetMgr
 {
     private:
-        DisplayMgr *display;
-
         uint32_t last_loop_time;
         uint32_t active_task_time;
         uint16_t voltage_level;
@@ -39,7 +37,7 @@ class WidgetMgr
             Serial.println("~~~~WidgetMgr");
         }
 
-        void initWidget(DisplayMgr &disp, bool bt_status, TaskHandle_t *bt_handler, TaskHandle_t *usage_handler);
+        void initWidget(TaskHandle_t *bt_handler, TaskHandle_t *usage_handler);
         bool isBTInit(void);
 };
 

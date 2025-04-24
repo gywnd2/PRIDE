@@ -61,16 +61,13 @@ void switch_to_main_screen(lv_timer_t * timer)
 
 ///////////////////// SCREENS ////////////////////
 
-void ui_init(int splash_count)
+void ui_init(void)
 {
     lv_disp_t * dispp = lv_display_get_default();
     lv_theme_t * theme = lv_theme_default_init(dispp, lv_palette_main(LV_PALETTE_BLUE), lv_palette_main(LV_PALETTE_RED),
                                                false, LV_FONT_DEFAULT);
     lv_disp_set_theme(dispp, theme);
-    ui_Init_screen_init();
-    // if(splash_count == 2) ui_Main_screen_init();
     ui_Main_screen_init();
     ui____initial_actions0 = lv_obj_create(NULL);
-    lv_scr_load_anim(ui_Init, LV_SCR_LOAD_ANIM_NONE, 0, 0, false);
-    lv_timer_create(switch_to_main_screen, 10000, NULL);
+    lv_scr_load_anim(ui_Main, LV_SCR_LOAD_ANIM_NONE, 0, 0, false);
 }

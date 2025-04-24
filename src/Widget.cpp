@@ -93,12 +93,11 @@ void WidgetMgr::measure_task_time_end()
     active_task_time += (current_time - last_loop_time);
 }
 
-void WidgetMgr::initWidget(DisplayMgr &disp, bool bt_status, TaskHandle_t *bt_handler, TaskHandle_t *usage_handler)
+void WidgetMgr::initWidget(TaskHandle_t *bt_handler, TaskHandle_t *usage_handler)
 {
-    display = &disp;
-    if(not bt_status)
+    if(not serial_bt.isReady())
     {
-        display->UpdateOBDStatus("BT Init failed");
+        UpdateOBDStatus("BT Init failed");
         return;
     }
 

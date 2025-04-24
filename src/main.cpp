@@ -1,5 +1,4 @@
 #include <main.h>
-#include <pride_common.h>
 
 void setup ()
 {
@@ -8,26 +7,25 @@ void setup ()
     
     storage.InitStorage();
     storage.UpdateSplashEEPROM();
-    display.initDisplay(storage);
-    obd.InitOBD(serial_bt);
-    // dfp.initMp3();
-    // welcome.InitWelcome(obd, dfp);
-    // if(storage.GetSplashCount() == 2)
-    // {
-    //     widget.initWidget(display, serial_bt.available(), bt_task_handler, cal_cpu_ram_handler);
-    // }
+    display.InitDisplay();
+    obd.InitOBD();
+    dfp.InitMp3();
+    welcome.InitWelcome();
+    if(storage.GetSplashCount() == 2)
+    {
+        widget.initWidget(bt_task_handler, cal_cpu_ram_handler);
+    }
 
     Serial.println( "Setup done" );
 }
 
 void loop ()
 {
-    //lv_timer_handler(); /* let the GUI do its work */
-    delay(5);
-    UpdateGauge(obd);
+    vTaskDelay(pdMS_TO_TICKS(5));
+    UpdateGauge();
 }
 
-void UpdateGauge(OBDMgr &obd)
+void UpdateGauge(void)
 {
     ObdData data = obd.GetObdData();
     char buffer[8];
