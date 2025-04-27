@@ -2,6 +2,11 @@
 
 void UpdateOBDStatus(char *status)
 {
+    if(not isLvglInit)
+    {
+        Serial.println("[WidgetMgr] LVGL not initialized yet.");
+        return;
+    }
     lv_label_set_text(ui_obd_status, status);
 }
 

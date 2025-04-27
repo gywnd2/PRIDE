@@ -6,3 +6,4 @@
 Mp3Mgr dfp;
 OBDMgr obd;
 BluetoothSerial serial_bt;
+bool isLvglInit = false;

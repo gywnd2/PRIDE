@@ -13,6 +13,7 @@
 void ui_Init_screen_init(void);
 lv_obj_t * ui_Init;
 lv_obj_t * ui_Image5;
+
 // CUSTOM VARIABLES
 
 
@@ -67,7 +68,10 @@ void ui_init(void)
     lv_theme_t * theme = lv_theme_default_init(dispp, lv_palette_main(LV_PALETTE_BLUE), lv_palette_main(LV_PALETTE_RED),
                                                false, LV_FONT_DEFAULT);
     lv_disp_set_theme(dispp, theme);
+    ui_Init_screen_init();
     ui_Main_screen_init();
     ui____initial_actions0 = lv_obj_create(NULL);
-    lv_scr_load_anim(ui_Main, LV_SCR_LOAD_ANIM_NONE, 0, 0, false);
+
+    lv_timer_t * timer = lv_timer_create(switch_to_main_screen, 3000, NULL);
+    lv_scr_load(ui_Init);
 }

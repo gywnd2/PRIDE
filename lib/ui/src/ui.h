@@ -29,6 +29,7 @@ extern "C" {
 void ui_Init_screen_init(void);
 extern lv_obj_t * ui_Init;
 extern lv_obj_t * ui_Image5;
+
 // CUSTOM VARIABLES
 
 // SCREEN: ui_Main

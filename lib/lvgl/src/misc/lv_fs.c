@@ -72,7 +72,7 @@ lv_fs_res_t lv_fs_open(lv_fs_file_t * file_p, const char * path, lv_fs_mode_t mo
     lv_fs_drv_t * drv = lv_fs_get_drv(letter);
 
     if(drv == NULL) {
-        LV_LOG_WARN("Can't open file (%s): unknown driver letter", path);
+        LV_LOG_WARN("Can't open file (%s): unknown driver letter (%c)", path, letter);
         return LV_FS_RES_NOT_EX;
     }
 

@@ -2,10 +2,10 @@
 #define __WIDGET__
 
 #include <Arduino.h>
-#include <lvgl.h>
 #include <ui.h>
 #include "esp_task_wdt.h"
 #include <pride_common.h>
+#include <Global.h>
 
 class WidgetMgr
 {
@@ -13,14 +13,14 @@ class WidgetMgr
         uint32_t last_loop_time;
         uint32_t active_task_time;
         uint16_t voltage_level;
-        uint16_t coolant_level;  
+        uint16_t coolant_level;
 
         float get_cpu_usage(void);
         float get_ram_usage(void);
         void update_usage();
         void measure_task_time_start();
         void measure_task_time_end();
-        
+
         // static void InitBTTask(void *param);
         static void CalculateCpuRamUsageTask(void *param);
 
@@ -28,7 +28,7 @@ class WidgetMgr
         WidgetMgr() : last_loop_time(0),
                       active_task_time(0),
                       voltage_level(0),
-                      coolant_level(0)     
+                      coolant_level(0)
         {
             Serial.println("====WidgetMgr");
         }

@@ -10,7 +10,7 @@
 //     UpdateOBDStatus("BT Init success");
 
 //     // Bluetooth 초기화 후 지연
-//     esp_task_wdt_reset(); 
+//     esp_task_wdt_reset();
 //     vTaskDelay(pdMS_TO_TICKS(100));
 
 //     if(NotifyOBDConnect())
@@ -20,7 +20,7 @@
 //     }
 
 
-//     esp_task_wdt_reset(); 
+//     esp_task_wdt_reset();
 //     vTaskDelay(pdMS_TO_TICKS(100));
 //     esp_task_wdt_delete(NULL);
 //     vTaskDelete(NULL);
@@ -58,7 +58,7 @@ float WidgetMgr::get_ram_usage(void)
 {
     uint32_t free_heap = heap_caps_get_free_size(MALLOC_CAP_DEFAULT);
     uint32_t total_heap = heap_caps_get_total_size(MALLOC_CAP_DEFAULT);
-    
+
     if (total_heap == 0) return 0.0f;
 
     // RAM 사용량 계산 (소수점 1자리 포함)
@@ -77,6 +77,8 @@ void WidgetMgr::update_usage()
 
     char ram[6]; // "100.0%"를 저장하려면 6바이트 필요
     sprintf(ram, "%.1f%%", get_ram_usage());
+
+    Serial.printf("[WidgetMgr] : CPU usage: %s, RAM usage: %s\n", cpu, ram);
 
     lv_label_set_text(ui_cpu_usage, cpu);
     lv_label_set_text(ui_ram_usage, ram);

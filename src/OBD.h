@@ -13,6 +13,7 @@
 class OBDMgr
 {
     private:
+        bool obd_init = false;
         BluetoothSerial *bt;
         ELM327 myELM327;
         ObdData obd_data;
@@ -35,6 +36,7 @@ class OBDMgr
         }
         
         void InitOBD(void);
+        bool IsOBDInitialized(void);
         void InitBTTask(void *param);
         ObdData GetObdData(void);
         void SetCoolantTemp(uint16_t val);

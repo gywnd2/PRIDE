@@ -39,7 +39,13 @@ void OBDMgr::InitOBD(void)
         UpdateOBDStatus("BT Connect Failed");
     }
 
+    obd_init = true;
     esp_task_wdt_delete(NULL);
+}
+
+bool OBDMgr::IsOBDInitialized(void)
+{
+    return obd_init;
 }
 
 void OBDMgr::QueryCoolant(uint16_t &coolant_temp)

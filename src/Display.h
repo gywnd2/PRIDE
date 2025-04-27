@@ -2,7 +2,6 @@
 #define __DISPLAY__
 
 #include <Arduino.h>
-#include <lvgl.h>
 #include <TFT_eSPI.h>
 #include <ui.h>
 #include <Global.h>
@@ -21,7 +20,7 @@ class DisplayMgr
         lv_disp_t* disp;
         lv_indev_t* indev;
         lv_color_t buf [SCREENBUFFER_SIZE_PIXELS];
-        
+
     public:
         DisplayMgr()
         {
