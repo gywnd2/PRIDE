@@ -14,6 +14,7 @@ class OBDMgr
 {
     private:
         bool obd_init = false;
+        bool obd_busy = false;
         BluetoothSerial *bt;
         ELM327 myELM327;
         ObdData obd_data;
@@ -22,7 +23,7 @@ class OBDMgr
 
         void QueryCoolant(uint16_t &coolant_temp);
         void QueryVoltage(uint16_t &voltage_level);
-        
+
         TaskHandle_t query_coolant_voltage_handler = NULL;
         TaskHandle_t query_rpm = NULL;
     public:
@@ -34,7 +35,7 @@ class OBDMgr
         {
             Serial.println("~~~~OBDMgr");
         }
-        
+
         void InitOBD(void);
         bool IsOBDInitialized(void);
         void InitBTTask(void *param);
@@ -42,7 +43,7 @@ class OBDMgr
         void SetCoolantTemp(uint16_t val);
         void SetVoltageLevel(uint16_t val);
         void SetRPM(uint16_t val);
-        
+
         static void QueryRPM(void *param);
         static void Query30SecData(void *param);
 };

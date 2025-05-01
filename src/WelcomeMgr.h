@@ -10,7 +10,7 @@ class WelcomeMgr
     private:
 
     public:
-        WelcomeMgr()             
+        WelcomeMgr()
         {
             Serial.println("====WelcomeMgr");
         }
@@ -20,7 +20,7 @@ class WelcomeMgr
         }
 
         void InitWelcome(void);
-        void CheckGoodbyeCondition(void);
+        static void CheckGoodbyeCondition(void* param);
 };
 
 #endif

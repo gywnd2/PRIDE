@@ -105,13 +105,15 @@ void WidgetMgr::initWidget(TaskHandle_t *bt_handler, TaskHandle_t *usage_handler
 
     // xTaskCreate(InitBTTask, "initBTTask", 4096, this, 1, bt_handler);
     Serial.println("[WidgetMgr] : Init BT <-> OBD asynchronously");
-    xTaskCreate(CalculateCpuRamUsageTask, "CalCpuRam", 4096, this, 2, usage_handler);
+    xTaskCreate(CalculateCpuRamUsageTask, "CalCpuRam", 2048, this, 2, usage_handler);
     Serial.println("[WidgetMgr] : Create CPU/RAM usage calcultaion task by 3sec period");
 }
 
 void WidgetMgr::CalculateCpuRamUsageTask(void *param)
 {
     WidgetMgr* self = static_cast<WidgetMgr*>(param);
+    esp_task_wdt_delete(NULL);
+
     while (true)
     {
         self->measure_task_time_start();

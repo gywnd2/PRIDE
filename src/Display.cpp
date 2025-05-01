@@ -159,7 +159,7 @@ void DisplayMgr::InitDisplay()
     isLvglInit = true;
     Serial.println("[DisplayMgr] UI initialized.");
 
-    xTaskCreate(updateDisplay, "UpdateDisplay", 8192, this, 3, NULL);
+    xTaskCreate(updateDisplay, "UpdateDisplay", 4096, this, 3, NULL);
     Serial.println("[DisplayMgr] UpdateDisplay task created.");
 
 
@@ -167,6 +167,7 @@ void DisplayMgr::InitDisplay()
 
 void DisplayMgr::updateDisplay(void *param)
 {
+    esp_task_wdt_delete(NULL);
     while(true)
     {
         lv_timer_handler();
