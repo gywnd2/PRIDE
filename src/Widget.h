@@ -20,8 +20,6 @@ class WidgetMgr
         void update_usage();
         void measure_task_time_start();
         void measure_task_time_end();
-
-        // static void InitBTTask(void *param);
         static void CalculateCpuRamUsageTask(void *param);
 
     public:
@@ -37,7 +35,7 @@ class WidgetMgr
             Serial.println("~~~~WidgetMgr");
         }
 
-        void initWidget(TaskHandle_t *bt_handler, TaskHandle_t *usage_handler);
+        void initWidget(TaskHandle_t *usage_handler);
         bool isBTInit(void);
 };
 

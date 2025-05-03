@@ -9,7 +9,7 @@
 
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 240
-#define SCREENBUFFER_SIZE_PIXELS 7680
+#define SCREENBUFFER_SIZE_PIXELS 240
 
 static TFT_eSPI tft = TFT_eSPI(SCREEN_WIDTH, SCREEN_HEIGHT); // Invoke library, pins defined in User_Setup.h
 
@@ -33,11 +33,9 @@ class DisplayMgr
         }
 
         void InitDisplay(void);
-        static void updateDisplay(void *param);
+        static void UpdateDisplay(void* param);
         static void flush_display(lv_display_t *disp, const lv_area_t *area, uint8_t *pixelmap);
         static uint32_t my_tick_get_cb(void);
-        void UpdateOBDStatus(char *status);
-
 };
 
 #endif

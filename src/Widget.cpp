@@ -1,31 +1,5 @@
 #include <Widget.h>
 
-// void WidgetMgr::InitBTTask(void *param)
-// {
-//     WidgetMgr* self = static_cast<WidgetMgr*>(param);
-//     esp_task_wdt_add(NULL);
-//     esp_task_wdt_init(60, true);
-//     esp_task_wdt_reset();
-
-//     UpdateOBDStatus("BT Init success");
-
-//     // Bluetooth 초기화 후 지연
-//     esp_task_wdt_reset();
-//     vTaskDelay(pdMS_TO_TICKS(100));
-
-//     if(NotifyOBDConnect())
-//     {
-//         esp_task_wdt_reset();
-//         vTaskDelay(pdMS_TO_TICKS(100));
-//     }
-
-
-//     esp_task_wdt_reset();
-//     vTaskDelay(pdMS_TO_TICKS(100));
-//     esp_task_wdt_delete(NULL);
-//     vTaskDelete(NULL);
-// }
-
 float WidgetMgr::get_cpu_usage(void)
 {
     static uint32_t last_time = 0;
@@ -80,8 +54,8 @@ void WidgetMgr::update_usage()
 
     Serial.printf("[WidgetMgr] : CPU usage: %s, RAM usage: %s\n", cpu, ram);
 
-    lv_label_set_text(ui_cpu_usage, cpu);
-    lv_label_set_text(ui_ram_usage, ram);
+    UpdateCpuUsage(*cpu);
+    UpdateRamUsage(*ram);
 }
 
 void WidgetMgr::measure_task_time_start()
@@ -95,27 +69,35 @@ void WidgetMgr::measure_task_time_end()
     active_task_time += (current_time - last_loop_time);
 }
 
-void WidgetMgr::initWidget(TaskHandle_t *bt_handler, TaskHandle_t *usage_handler)
+void WidgetMgr::initWidget(TaskHandle_t *usage_handler)
 {
-    if(not serial_bt.isReady())
-    {
-        UpdateOBDStatus("BT Init failed");
-        return;
-    }
-
-    // xTaskCreate(InitBTTask, "initBTTask", 4096, this, 1, bt_handler);
     Serial.println("[WidgetMgr] : Init BT <-> OBD asynchronously");
-    xTaskCreate(CalculateCpuRamUsageTask, "CalCpuRam", 2048, this, 2, usage_handler);
+    xTaskCreate(CalculateCpuRamUsageTask, "CalCpuRam", 4096, this, 2, usage_handler);
     Serial.println("[WidgetMgr] : Create CPU/RAM usage calcultaion task by 3sec period");
 }
 
 void WidgetMgr::CalculateCpuRamUsageTask(void *param)
 {
     WidgetMgr* self = static_cast<WidgetMgr*>(param);
+    if(self == NULL)
+    {
+        Serial.println("[WidgetMgr] : CalculateCpuRamUsageTask param is NULL.");
+        vTaskDelete(NULL);
+        return;
+    }
+
+    unsigned long start_time = millis();
     esp_task_wdt_delete(NULL);
 
     while (true)
     {
+        unsigned long current_time = millis();
+        if(current_time - start_time >= LOG_INTERVAL) // 10초 후 종료
+        {
+            Serial.println("[WidgetMgr] CheckGoodbyCalculateCpuRamUsageTask");
+            start_time = millis();
+        }
+
         self->measure_task_time_start();
         self->update_usage();
         self->measure_task_time_end();

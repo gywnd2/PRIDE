@@ -11,9 +11,11 @@
 
 void NotifyPlaySound(int track_num);
 bool NotifyConnectOBD(uint8_t remoteAddress[]);
-void UpdateOBDStatus(char *status);
+void UpdateOBDStatus(int status);
 void UpdateVoltage(char *val);
 void UpdateCoolant(char *val);
+void UpdateCpuUsage(char &val);
+void UpdateRamUsage(char &val);
 BluetoothSerial& RequestBTSerial(void);
 
 #endif

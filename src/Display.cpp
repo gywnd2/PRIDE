@@ -83,7 +83,7 @@ void DisplayMgr::InitDisplay()
     tft.setRotation( 3 ); /* Landscape orientation, flipped */
     Serial.println("[DisplayMgr] TFT rotation set to 3.");
     lv_init();
-    if(storage.IsStorageInitialized() == false)
+    if(not storage.IsStorageInitialized())
     {
         Serial.println("[DisplayMgr] Storage not initialized yet.");
         return;
@@ -159,18 +159,42 @@ void DisplayMgr::InitDisplay()
     isLvglInit = true;
     Serial.println("[DisplayMgr] UI initialized.");
 
-    xTaskCreate(updateDisplay, "UpdateDisplay", 4096, this, 3, NULL);
+    xTaskCreate(UpdateDisplay, "UpdateDisplay", 4096, this, 1, NULL);
     Serial.println("[DisplayMgr] UpdateDisplay task created.");
-
-
 }
 
-void DisplayMgr::updateDisplay(void *param)
+void DisplayMgr::UpdateDisplay(void *param)
 {
     esp_task_wdt_delete(NULL);
+    unsigned long start_time = millis();
+
     while(true)
     {
         lv_timer_handler();
+
+        unsigned long current_time = millis();
+
+        ObdData data = obd.GetObdData();
+        char buffer[8];
+
+        lv_bar_set_value(ui_bar_voltage, data.voltage, LV_ANIM_ON);
+        lv_bar_set_value(ui_bar_coolant, data.coolant, LV_ANIM_ON);
+
+
+        // OBD Status
+        lv_label_set_text(ui_obd_status, ObdString[obd.GetOBDStatus()].c_str());
+
+        // CPU, RAM
+        lv_label_set_text(ui_cpu_usage, cpu_usage);
+        lv_label_set_text(ui_ram_usage, ram_usage);
+
+        if(current_time - start_time >= LOG_INTERVAL) // 10초 후 종료
+        {
+            Serial.printf("[DisplayMgr] UpdateDisplay / OBD Status %d / Voltage %d / Coolant %d / RPM %d\n",
+                         obd.GetOBDStatus(), data.voltage, data.coolant, data.rpm);
+            start_time = millis();
+        }
+
         vTaskDelay(pdMS_TO_TICKS(5));
     }
 }
@@ -196,9 +220,4 @@ void DisplayMgr::flush_display(lv_display_t *disp, const lv_area_t *area, uint8_
 uint32_t DisplayMgr::my_tick_get_cb (void)
 {
     return millis();
-}
-
-void DisplayMgr::UpdateOBDStatus(char *status)
-{
-    lv_label_set_text(ui_obd_status, status);
 }

@@ -13,19 +13,19 @@
 class OBDMgr
 {
     private:
-        bool obd_init = false;
         bool obd_busy = false;
         BluetoothSerial *bt;
         ELM327 myELM327;
         ObdData obd_data;
+        int obd_status = BT_INIT_FAILED;
         const String obd_name = "OBDII";
         uint8_t obd_addr[6]={0x01, 0x23, 0x45, 0x67, 0x89, 0xba};
 
         void QueryCoolant(uint16_t &coolant_temp);
         void QueryVoltage(uint16_t &voltage_level);
+        void QueryRPM(uint16_t &rpm_value);
 
-        TaskHandle_t query_coolant_voltage_handler = NULL;
-        TaskHandle_t query_rpm = NULL;
+        TaskHandle_t query_obd_data_task = NULL;
     public:
         OBDMgr()
         {
@@ -37,15 +37,16 @@ class OBDMgr
         }
 
         void InitOBD(void);
+        static void ConnectBTTask(void *param);
         bool IsOBDInitialized(void);
-        void InitBTTask(void *param);
         ObdData GetObdData(void);
         void SetCoolantTemp(uint16_t val);
         void SetVoltageLevel(uint16_t val);
         void SetRPM(uint16_t val);
+        void SetOBDStatus(int status);
+        int GetOBDStatus(void);
 
-        static void QueryRPM(void *param);
-        static void Query30SecData(void *param);
+        static void QueryOBDData(void *param);
 };
 
 #endif

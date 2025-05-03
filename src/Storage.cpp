@@ -24,6 +24,7 @@ bool StorageMgr::InitStorage(void)
         return false;
     }
 
+    /*
     if(SPIFFS.begin(true))
     {
         Serial.println("[StorageMgr] Initialized SPIFFS successfully.");
@@ -33,7 +34,7 @@ bool StorageMgr::InitStorage(void)
         Serial.println("[StorageMgr] Failed to initialize SPIFFS!");
         return false;
     }
-
+    */
 
     initialized = true;
     return initialized;
@@ -46,6 +47,12 @@ bool StorageMgr::IsStorageInitialized(void)
 
 void StorageMgr::UpdateSplashEEPROM(void)
 {
+    if(not initialized)
+    {
+        Serial.println("[StorageMgr] Storage not initialized. Cannot update EEPROM.");
+        return;
+    }
+
     int splash_count = EEPROM.read(0);
     switch(splash_count)
     {
@@ -79,6 +86,12 @@ int StorageMgr::GetSplashCount(void)
 
 void StorageMgr::ListFiles(fs::FS &fs, const char *dirname, uint8_t level)
 {
+    if(not initialized)
+    {
+        Serial.println("[StorageMgr] Storage not initialized. Cannot list files.");
+        return;
+    }
+
     File root = fs.open(dirname);
     Serial.println("[StorageMgr] Listing files in directory: " + String(dirname));
     if (!root) {

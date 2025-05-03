@@ -20,6 +20,4 @@ TaskHandle_t *bt_task_handler = NULL;
 TaskHandle_t *cal_cpu_ram_handler = NULL;
 TaskHandle_t *welcome_handler = NULL;
 
-static void UpdateGauge(void* param);
-
 #endif

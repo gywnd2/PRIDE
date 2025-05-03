@@ -9,27 +9,36 @@ void WelcomeMgr::InitWelcome(void)
 void WelcomeMgr::CheckGoodbyeCondition(void* param)
 {
     WelcomeMgr* self = static_cast<WelcomeMgr*>(param);
+    if(self == NULL)
+    {
+        Serial.println("[WelcomeMgr] CheckGoodbyeCondition param is NULL.");
+        vTaskDelete(NULL);
+        return;
+    }
+
+    unsigned long start_time = millis();
 
     while(true)
     {
         static bool goodbye_played = false;
         if(goodbye_played) return;
 
+        unsigned long current_time = millis();
+        if(current_time - start_time >= LOG_INTERVAL) // 10초 후 종료
+        {
+            Serial.printf("[WelcomeMgr] CheckGoodbyeCondition / goodbye_played %d\n", goodbye_played);
+            start_time = millis();
+        }
+
         ObdData data = obd.GetObdData();
-        Serial.println("[WelcomeMgr] CheckGoodbyeCondition");
-        Serial.println("[WelcomeMgr] RPM : "+String(data.rpm));
-        Serial.println("[WelcomeMgr] Coolant : "+String(data.coolant));
-        Serial.println("[WelcomeMgr] Voltage : "+String(data.voltage));
 
         if(100 <= data.rpm && data.rpm <= 7000)
         {
-            Serial.println("RPM valid : "+String(data.rpm));
-            return;
+            continue;
         }
 
-        if(data.rpm == 9999 || data.coolant == 9999 || data.voltage == 9999)
+        if(obd.GetOBDStatus() == OBD_DISCONNECTED)
         {
-            Serial.println("[WelcomeMgr] RPM response seems like engine turned off. Play Goodbye sound");
             NotifyPlaySound(GOODBYE_TRACK_NUM);
             delay(6000);
             goodbye_played = true;

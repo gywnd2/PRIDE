@@ -30,8 +30,8 @@ lv_obj_t * ui_cpu_usage;
 lv_obj_t * ui_obd_status;
 lv_obj_t * ui_Image1;
 lv_obj_t * ui_Image4;
-lv_obj_t * ui_Bar1;
-lv_obj_t * ui_Bar2;
+lv_obj_t * ui_bar_voltage;
+lv_obj_t * ui_bar_coolant;
 lv_obj_t * ui_Label1;
 lv_obj_t * ui_Label2;
 lv_obj_t * ui_Label3;
@@ -72,6 +72,6 @@ void ui_init(void)
     ui_Main_screen_init();
     ui____initial_actions0 = lv_obj_create(NULL);
 
-    lv_timer_t * timer = lv_timer_create(switch_to_main_screen, 3000, NULL);
+    lv_timer_t * timer = lv_timer_create(switch_to_main_screen, 7000, NULL);
     lv_scr_load(ui_Init);
 }

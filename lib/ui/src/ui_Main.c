@@ -121,52 +121,52 @@ void ui_Main_screen_init(void)
     lv_obj_add_flag(ui_Image4, LV_OBJ_FLAG_CLICKABLE);     /// Flags
     lv_obj_remove_flag(ui_Image4, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
 
-    ui_Bar1 = lv_bar_create(ui_Main);
-    lv_bar_set_range(ui_Bar1, 0, 18);
-    lv_bar_set_value(ui_Bar1, 0, LV_ANIM_ON);
-    lv_bar_set_start_value(ui_Bar1, 0, LV_ANIM_OFF);
-    lv_obj_set_width(ui_Bar1, 257);
-    lv_obj_set_height(ui_Bar1, 10);
-    lv_obj_set_x(ui_Bar1, -3);
-    lv_obj_set_y(ui_Bar1, -43);
-    lv_obj_set_align(ui_Bar1, LV_ALIGN_CENTER);
-    lv_obj_set_style_radius(ui_Bar1, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_color(ui_Bar1, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(ui_Bar1, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_image_src(ui_Bar1, &ui_img_716095653, LV_PART_MAIN | LV_STATE_DEFAULT);
+    ui_bar_voltage = lv_bar_create(ui_Main);
+    lv_bar_set_range(ui_bar_voltage, 0, 18);
+    lv_bar_set_value(ui_bar_voltage, 0, LV_ANIM_ON);
+    lv_bar_set_start_value(ui_bar_voltage, 0, LV_ANIM_OFF);
+    lv_obj_set_width(ui_bar_voltage, 257);
+    lv_obj_set_height(ui_bar_voltage, 10);
+    lv_obj_set_x(ui_bar_voltage, -3);
+    lv_obj_set_y(ui_bar_voltage, -43);
+    lv_obj_set_align(ui_bar_voltage, LV_ALIGN_CENTER);
+    lv_obj_set_style_radius(ui_bar_voltage, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui_bar_voltage, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui_bar_voltage, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_image_src(ui_bar_voltage, &ui_img_716095653, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    lv_obj_set_style_radius(ui_Bar1, 0, LV_PART_INDICATOR | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_color(ui_Bar1, lv_color_hex(0xECF100), LV_PART_INDICATOR | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(ui_Bar1, 255, LV_PART_INDICATOR | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_grad_color(ui_Bar1, lv_color_hex(0x007507), LV_PART_INDICATOR | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_grad_dir(ui_Bar1, LV_GRAD_DIR_HOR, LV_PART_INDICATOR | LV_STATE_DEFAULT);
-
-    //Compensating for LVGL9.1 draw crash with bar/slider max value when top-padding is nonzero and right-padding is 0
-    if(lv_obj_get_style_pad_top(ui_Bar1, LV_PART_MAIN) > 0) lv_obj_set_style_pad_right(ui_Bar1,
-                                                                                           lv_obj_get_style_pad_right(ui_Bar1, LV_PART_MAIN) + 1, LV_PART_MAIN);
-    ui_Bar2 = lv_bar_create(ui_Main);
-    lv_bar_set_range(ui_Bar2, 0, 150);
-    lv_bar_set_value(ui_Bar2, 0, LV_ANIM_ON);
-    lv_bar_set_start_value(ui_Bar2, 0, LV_ANIM_OFF);
-    lv_obj_set_width(ui_Bar2, 257);
-    lv_obj_set_height(ui_Bar2, 10);
-    lv_obj_set_x(ui_Bar2, -3);
-    lv_obj_set_y(ui_Bar2, 39);
-    lv_obj_set_align(ui_Bar2, LV_ALIGN_CENTER);
-    lv_obj_set_style_radius(ui_Bar2, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_color(ui_Bar2, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(ui_Bar2, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_image_src(ui_Bar2, &ui_img_716095653, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    lv_obj_set_style_radius(ui_Bar2, 0, LV_PART_INDICATOR | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_color(ui_Bar2, lv_color_hex(0x1C6DFF), LV_PART_INDICATOR | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(ui_Bar2, 255, LV_PART_INDICATOR | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_grad_color(ui_Bar2, lv_color_hex(0xFF0000), LV_PART_INDICATOR | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_grad_dir(ui_Bar2, LV_GRAD_DIR_HOR, LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    lv_obj_set_style_radius(ui_bar_voltage, 0, LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui_bar_voltage, lv_color_hex(0xECF100), LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui_bar_voltage, 255, LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_grad_color(ui_bar_voltage, lv_color_hex(0x007507), LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_grad_dir(ui_bar_voltage, LV_GRAD_DIR_HOR, LV_PART_INDICATOR | LV_STATE_DEFAULT);
 
     //Compensating for LVGL9.1 draw crash with bar/slider max value when top-padding is nonzero and right-padding is 0
-    if(lv_obj_get_style_pad_top(ui_Bar2, LV_PART_MAIN) > 0) lv_obj_set_style_pad_right(ui_Bar2,
-                                                                                           lv_obj_get_style_pad_right(ui_Bar2, LV_PART_MAIN) + 1, LV_PART_MAIN);
+    if(lv_obj_get_style_pad_top(ui_bar_voltage, LV_PART_MAIN) > 0) lv_obj_set_style_pad_right(ui_bar_voltage,
+                                                                                           lv_obj_get_style_pad_right(ui_bar_voltage, LV_PART_MAIN) + 1, LV_PART_MAIN);
+    ui_bar_coolant = lv_bar_create(ui_Main);
+    lv_bar_set_range(ui_bar_coolant, 0, 150);
+    lv_bar_set_value(ui_bar_coolant, 0, LV_ANIM_ON);
+    lv_bar_set_start_value(ui_bar_coolant, 0, LV_ANIM_OFF);
+    lv_obj_set_width(ui_bar_coolant, 257);
+    lv_obj_set_height(ui_bar_coolant, 10);
+    lv_obj_set_x(ui_bar_coolant, -3);
+    lv_obj_set_y(ui_bar_coolant, 39);
+    lv_obj_set_align(ui_bar_coolant, LV_ALIGN_CENTER);
+    lv_obj_set_style_radius(ui_bar_coolant, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui_bar_coolant, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui_bar_coolant, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_image_src(ui_bar_coolant, &ui_img_716095653, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    lv_obj_set_style_radius(ui_bar_coolant, 0, LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui_bar_coolant, lv_color_hex(0x1C6DFF), LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui_bar_coolant, 255, LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_grad_color(ui_bar_coolant, lv_color_hex(0xFF0000), LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_grad_dir(ui_bar_coolant, LV_GRAD_DIR_HOR, LV_PART_INDICATOR | LV_STATE_DEFAULT);
+
+    //Compensating for LVGL9.1 draw crash with bar/slider max value when top-padding is nonzero and right-padding is 0
+    if(lv_obj_get_style_pad_top(ui_bar_coolant, LV_PART_MAIN) > 0) lv_obj_set_style_pad_right(ui_bar_coolant,
+                                                                                           lv_obj_get_style_pad_right(ui_bar_coolant, LV_PART_MAIN) + 1, LV_PART_MAIN);
     ui_Label1 = lv_label_create(ui_Main);
     lv_obj_set_width(ui_Label1, LV_SIZE_CONTENT);   /// 1
     lv_obj_set_height(ui_Label1, LV_SIZE_CONTENT);    /// 1
