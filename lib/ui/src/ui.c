@@ -72,6 +72,6 @@ void ui_init(void)
     ui_Main_screen_init();
     ui____initial_actions0 = lv_obj_create(NULL);
 
-    lv_timer_t * timer = lv_timer_create(switch_to_main_screen, 7000, NULL);
+    lv_timer_t * timer = lv_timer_create(switch_to_main_screen, 10000, NULL);
     lv_scr_load(ui_Init);
 }

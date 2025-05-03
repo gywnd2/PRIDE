@@ -21,7 +21,11 @@ void WelcomeMgr::CheckGoodbyeCondition(void* param)
     while(true)
     {
         static bool goodbye_played = false;
-        if(goodbye_played) return;
+        if(goodbye_played)
+        {
+            vTaskDelete(NULL);
+            return;
+        }
 
         unsigned long current_time = millis();
         if(current_time - start_time >= LOG_INTERVAL) // 10초 후 종료
@@ -40,7 +44,6 @@ void WelcomeMgr::CheckGoodbyeCondition(void* param)
         if(obd.GetOBDStatus() == OBD_DISCONNECTED)
         {
             NotifyPlaySound(GOODBYE_TRACK_NUM);
-            delay(6000);
             goodbye_played = true;
         }
 

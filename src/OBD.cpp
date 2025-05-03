@@ -98,7 +98,6 @@ void OBDMgr::QueryCoolant(uint16_t &coolant_temp)
         else if(myELM327.nb_rx_state == ELM_NO_DATA)
         {
             coolant_temp = OBD_QUERY_INVALID_RESPONSE;
-            SetOBDStatus(OBD_DISCONNECTED);
             break;
         }
         else if(myELM327.nb_rx_state == ELM_GETTING_MSG)
@@ -127,7 +126,6 @@ void OBDMgr::QueryVoltage(uint16_t &voltage_level)
         else if(myELM327.nb_rx_state == ELM_NO_DATA)
         {
             voltage_level = OBD_QUERY_INVALID_RESPONSE;
-            SetOBDStatus(OBD_DISCONNECTED);
             break;
         }
         else if(myELM327.nb_rx_state == ELM_GETTING_MSG)
@@ -165,7 +163,6 @@ void OBDMgr::QueryRPM(uint16_t &rpm_value)
             if(rpm_retry_count == 2)
             {
                 rpm_value = OBD_QUERY_INVALID_RESPONSE;
-                SetOBDStatus(OBD_DISCONNECTED);
                 Serial.println("[OBDMgr] RPM response is invalid. Retry Count "+String(rpm_retry_count));
                 break;
             }
@@ -218,6 +215,16 @@ void OBDMgr::SetOBDStatus(int status)
 
 int OBDMgr::GetOBDStatus(void)
 {
+    //TEST
+    /*
+    static int count = 0;
+    if(count <= 3000) count++;
+    Serial.println("[OBDMgr] Get OBD status count "+String(count));
+    if(count >= 3000)
+    {
+        return OBD_DISCONNECTED;
+    }
+    */
     return obd_status;
 }
 
@@ -280,6 +287,14 @@ void OBDMgr::QueryOBDData(void *param)
             }
 
             last_30sec_time = current_time; // 마지막 30초 쿼리 시간 갱신
+        }
+
+        if(self->myELM327.nb_rx_state == ELM_NO_DATA)
+        {
+            Serial.println("[OBDMgr] OBD is disconnected. Delete data query task.");
+            self->SetOBDStatus(OBD_DISCONNECTED);
+            vTaskDelete(NULL);
+            return;
         }
 
         // 태스크 주기 대기

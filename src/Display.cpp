@@ -171,6 +171,18 @@ void DisplayMgr::UpdateDisplay(void *param)
     while(true)
     {
         lv_timer_handler();
+        vTaskDelay(pdMS_TO_TICKS(5));
+
+        static bool goodbye = false;
+        if(obd.GetOBDStatus() == OBD_DISCONNECTED)
+        {
+            if(not goodbye)
+            {
+                lv_scr_load_anim(ui_Init, LV_SCR_LOAD_ANIM_FADE_ON, 2000, 0, true);
+                goodbye = true;
+            }
+            continue;
+        }
 
         unsigned long current_time = millis();
 
@@ -195,7 +207,6 @@ void DisplayMgr::UpdateDisplay(void *param)
             start_time = millis();
         }
 
-        vTaskDelay(pdMS_TO_TICKS(5));
     }
 }
 
