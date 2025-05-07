@@ -53,6 +53,20 @@ extern lv_obj_t * ui_Label3;
 extern lv_obj_t * ui_Label4;
 extern lv_obj_t * ui_Label5;
 extern lv_obj_t * ui_Label6;
+
+// SCREEN: ui_Goodbye
+void ui_Goodbye_screen_init(void);
+extern lv_obj_t * ui_Goodbye;
+extern lv_obj_t * ui_Main_title;
+extern lv_obj_t * ui_Time_title;
+extern lv_obj_t * ui_Distance_title;
+extern lv_obj_t * ui_Fuel_title;
+extern lv_obj_t * ui_Time_value;
+extern lv_obj_t * ui_Time_value1;
+extern lv_obj_t * ui_Time_value2;
+extern lv_obj_t * ui_Panel2;
+extern lv_obj_t * ui_Panel3;
+
 // CUSTOM VARIABLES
 
 // EVENTS

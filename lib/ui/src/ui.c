@@ -38,6 +38,20 @@ lv_obj_t * ui_Label3;
 lv_obj_t * ui_Label4;
 lv_obj_t * ui_Label5;
 lv_obj_t * ui_Label6;
+
+// SCREEN: ui_Goodbye
+void ui_Goodbye_screen_init(void);
+lv_obj_t * ui_Goodbye;
+lv_obj_t * ui_Main_title;
+lv_obj_t * ui_Time_title;
+lv_obj_t * ui_Distance_title;
+lv_obj_t * ui_Fuel_title;
+lv_obj_t * ui_Time_value;
+lv_obj_t * ui_Time_value1;
+lv_obj_t * ui_Time_value2;
+lv_obj_t * ui_Panel2;
+lv_obj_t * ui_Panel3;
+
 // CUSTOM VARIABLES
 
 // EVENTS
@@ -70,6 +84,7 @@ void ui_init(void)
     lv_disp_set_theme(dispp, theme);
     ui_Init_screen_init();
     ui_Main_screen_init();
+    ui_Goodbye_screen_init();
     ui____initial_actions0 = lv_obj_create(NULL);
 
     lv_timer_t * timer = lv_timer_create(switch_to_main_screen, 10000, NULL);

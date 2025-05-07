@@ -33,6 +33,8 @@ class DisplayMgr
         }
 
         void InitDisplay(void);
+        static void ShowTripInfo(lv_timer_t * timer);
+        static void ShowGoodbye(lv_timer_t * timer);
         static void UpdateDisplay(void* param);
         static void flush_display(lv_display_t *disp, const lv_area_t *area, uint8_t *pixelmap);
         static uint32_t my_tick_get_cb(void);

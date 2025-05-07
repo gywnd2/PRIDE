@@ -163,6 +163,18 @@ void DisplayMgr::InitDisplay()
     Serial.println("[DisplayMgr] UpdateDisplay task created.");
 }
 
+void DisplayMgr::ShowTripInfo(lv_timer_t * timer)
+{
+    lv_scr_load_anim(ui_Goodbye, LV_SCR_LOAD_ANIM_FADE_ON, 2000, 0, true);
+    lv_timer_del(timer);
+}
+
+void DisplayMgr::ShowGoodbye(lv_timer_t * timer)
+{
+    lv_scr_load(ui_Init);
+    lv_timer_del(timer);
+}
+
 void DisplayMgr::UpdateDisplay(void *param)
 {
     esp_task_wdt_delete(NULL);
@@ -178,7 +190,8 @@ void DisplayMgr::UpdateDisplay(void *param)
         {
             if(not goodbye)
             {
-                lv_scr_load_anim(ui_Init, LV_SCR_LOAD_ANIM_FADE_ON, 2000, 0, true);
+                lv_timer_t* trip_info_timer = lv_timer_create(ShowTripInfo, 0, NULL);
+                lv_timer_t* goodbye_timer = lv_timer_create(ShowGoodbye, 12000, NULL);
                 goodbye = true;
             }
             continue;

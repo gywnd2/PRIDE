@@ -216,7 +216,7 @@ void OBDMgr::SetOBDStatus(int status)
 int OBDMgr::GetOBDStatus(void)
 {
     //TEST
-    /*
+
     static int count = 0;
     if(count <= 3000) count++;
     Serial.println("[OBDMgr] Get OBD status count "+String(count));
@@ -224,7 +224,7 @@ int OBDMgr::GetOBDStatus(void)
     {
         return OBD_DISCONNECTED;
     }
-    */
+
     return obd_status;
 }
 
