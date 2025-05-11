@@ -8,6 +8,7 @@
 class WelcomeMgr
 {
     private:
+        TaskHandle_t *welcome_handler = NULL;
 
     public:
         WelcomeMgr()

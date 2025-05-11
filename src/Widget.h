@@ -22,6 +22,8 @@ class WidgetMgr
         void measure_task_time_end();
         static void CalculateCpuRamUsageTask(void *param);
 
+        TaskHandle_t* cal_cpu_ram_handler;
+
     public:
         WidgetMgr() : last_loop_time(0),
                       active_task_time(0),
@@ -35,7 +37,7 @@ class WidgetMgr
             Serial.println("~~~~WidgetMgr");
         }
 
-        void initWidget(TaskHandle_t *usage_handler);
+        void InitWidget(void);
         bool isBTInit(void);
 };
 

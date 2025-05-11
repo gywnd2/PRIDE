@@ -1,5 +1,6 @@
 #include <Display.h>
 #include <SD.h>
+#include <Global.h>
 #include <esp_heap_caps.h>
 
 void print_lvgl_fs_drivers()
@@ -111,7 +112,7 @@ void DisplayMgr::InitDisplay()
     //play_bmp_animation();
     //lv_obj_center(img_obj);
 
-    // TODO : Resolve lack of memory
+    //TODO : Resolve lack of memory
     printf("Free heap: %d bytes\n", heap_caps_get_free_size(MALLOC_CAP_DEFAULT));
 
     /*
@@ -163,6 +164,15 @@ void DisplayMgr::InitDisplay()
     Serial.println("[DisplayMgr] UpdateDisplay task created.");
 }
 
+void DisplayMgr::ShowElapsedTime(void)
+{
+    trip.SetEndTime(millis());
+
+    char text_buf[9];
+    trip.GetElapsedTime(text_buf);
+    lv_label_set_text(ui_Time_value, text_buf);
+}
+
 void DisplayMgr::ShowTripInfo(lv_timer_t * timer)
 {
     lv_scr_load_anim(ui_Goodbye, LV_SCR_LOAD_ANIM_FADE_ON, 2000, 0, true);
@@ -192,6 +202,10 @@ void DisplayMgr::UpdateDisplay(void *param)
             {
                 lv_timer_t* trip_info_timer = lv_timer_create(ShowTripInfo, 0, NULL);
                 lv_timer_t* goodbye_timer = lv_timer_create(ShowGoodbye, 12000, NULL);
+                ShowElapsedTime();
+                //TODO
+                //ShowDistance();
+                //ShowFuelConsumption();
                 goodbye = true;
             }
             continue;

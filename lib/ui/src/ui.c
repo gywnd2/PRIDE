@@ -47,8 +47,8 @@ lv_obj_t * ui_Time_title;
 lv_obj_t * ui_Distance_title;
 lv_obj_t * ui_Fuel_title;
 lv_obj_t * ui_Time_value;
-lv_obj_t * ui_Time_value1;
-lv_obj_t * ui_Time_value2;
+lv_obj_t * ui_Distance_value;
+lv_obj_t * ui_Fuel_cons_value;
 lv_obj_t * ui_Panel2;
 lv_obj_t * ui_Panel3;
 

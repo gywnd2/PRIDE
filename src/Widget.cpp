@@ -69,10 +69,10 @@ void WidgetMgr::measure_task_time_end()
     active_task_time += (current_time - last_loop_time);
 }
 
-void WidgetMgr::initWidget(TaskHandle_t *usage_handler)
+void WidgetMgr::InitWidget(void)
 {
     Serial.println("[WidgetMgr] : Init BT <-> OBD asynchronously");
-    xTaskCreate(CalculateCpuRamUsageTask, "CalCpuRam", 4096, this, 2, usage_handler);
+    xTaskCreate(CalculateCpuRamUsageTask, "CalCpuRam", 4096, this, 2, cal_cpu_ram_handler);
     Serial.println("[WidgetMgr] : Create CPU/RAM usage calcultaion task by 3sec period");
 }
 

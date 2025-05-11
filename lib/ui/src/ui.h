@@ -62,8 +62,8 @@ extern lv_obj_t * ui_Time_title;
 extern lv_obj_t * ui_Distance_title;
 extern lv_obj_t * ui_Fuel_title;
 extern lv_obj_t * ui_Time_value;
-extern lv_obj_t * ui_Time_value1;
-extern lv_obj_t * ui_Time_value2;
+extern lv_obj_t * ui_Distance_value;
+extern lv_obj_t * ui_Fuel_cons_value;
 extern lv_obj_t * ui_Panel2;
 extern lv_obj_t * ui_Panel3;
 

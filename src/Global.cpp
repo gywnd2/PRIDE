@@ -1,10 +1,14 @@
 #include <Global.h>
-#include <MP3.h>
-#include <OBD.h>
 
 // Global variable definitions
 Mp3Mgr dfp;
 OBDMgr obd;
+TripMgr trip;
+WidgetMgr widget;
+DisplayMgr display;
+StorageMgr storage;
+WelcomeMgr welcome;
+
 BluetoothSerial serial_bt;
 bool isLvglInit = false;
 bool iswidgetUpdateNeeded = false;

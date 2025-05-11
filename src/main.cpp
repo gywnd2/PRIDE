@@ -1,8 +1,9 @@
 #include <main.h>
+#include <Global.h>
 
 void setup ()
 {
-    Serial.begin( 115200 ); /* prepare for possible serial debug */
+    Serial.begin( SERIAL_BAUDRATE ); /* prepare for possible serial debug */
     serial_bt.begin("PRIDE_ESP32", true);
 
     storage.InitStorage();
@@ -10,10 +11,9 @@ void setup ()
     display.InitDisplay();
     dfp.InitMp3();
     welcome.InitWelcome();
-    widget.initWidget(cal_cpu_ram_handler);
+    widget.InitWidget();
     obd.InitOBD();
-
-    xTaskCreate(welcome.CheckGoodbyeCondition, "CheckGoodbyeCondition", 2048, &welcome, 1, welcome_handler);
+    trip.InitTrip();
 
     Serial.println( "Setup done" );
 }

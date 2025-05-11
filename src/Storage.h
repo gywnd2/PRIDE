@@ -29,7 +29,7 @@ class StorageMgr
         bool InitStorage(void);
         bool IsStorageInitialized(void);
         void UpdateSplashEEPROM(void);
-        int GetSplashCount(void);\
+        int GetSplashCount(void);
         void ListFiles(fs::FS &fs, const char *dirname, uint8_t level);
         static void * LVGL_SD_OPEN_CALLBACK(lv_fs_drv_t * drv, const char * path, lv_fs_mode_t mode);
         static lv_fs_res_t LVGL_SD_READ_CALLBACK(lv_fs_drv_t * drv, void * file_p, void * buf, uint32_t btr, uint32_t * br);

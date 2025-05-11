@@ -4,7 +4,6 @@
 #include <Arduino.h>
 #include <TFT_eSPI.h>
 #include <ui.h>
-#include <Global.h>
 #include <AnimatedGIF.h>
 
 #define SCREEN_WIDTH 320
@@ -33,6 +32,7 @@ class DisplayMgr
         }
 
         void InitDisplay(void);
+        static void ShowElapsedTime(void);
         static void ShowTripInfo(lv_timer_t * timer);
         static void ShowGoodbye(lv_timer_t * timer);
         static void UpdateDisplay(void* param);

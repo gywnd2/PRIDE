@@ -2,11 +2,16 @@
 #define __GLOBAL__
 
 #include <Arduino.h>
-#include <MP3.h>
-#include <OBD.h>
-#include <Storage.h>
 #include <BluetoothSerial.h>
 #include <lvgl.h>
+#include <Data.h>
+#include <MP3.h>
+#include <OBD.h>
+#include <TripMgr.h>
+#include <Widget.h>
+#include <Display.h>
+#include <Storage.h>
+#include <WelcomeMgr.h>
 
 /*
 CS (Chip Select): GPIO 5
@@ -15,6 +20,7 @@ CLK (Clock): GPIO 18
 MISO (Master In Slave Out): GPIO 19
 */
 
+#define SERIAL_BAUDRATE 115200
 #define WELCOME_TRACK_NUM 1
 #define GOODBYE_TRACK_NUM 2
 #define LOG_INTERVAL 3000
@@ -24,10 +30,18 @@ MISO (Master In Slave Out): GPIO 19
 class Mp3Mgr;
 class OBDMgr;
 class StorageMgr;
+class TripMgr;
+class WidgetMgr;
+class DisplayMgr;
+class WelcomeMgr;
 
+extern StorageMgr storage;
+extern WidgetMgr widget;
+extern WelcomeMgr welcome;
+extern DisplayMgr display;
 extern Mp3Mgr dfp;
 extern OBDMgr obd;
-extern StorageMgr storage;
+extern TripMgr trip;
 extern BluetoothSerial serial_bt;
 extern bool isLvglInit;
 extern bool isWidgetUpdateNeeded;

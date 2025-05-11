@@ -24,6 +24,7 @@ class OBDMgr
         void QueryCoolant(uint16_t &coolant_temp);
         void QueryVoltage(uint16_t &voltage_level);
         void QueryRPM(uint16_t &rpm_value);
+        void QueryDistAfterEcuBoot(uint16_t &distance);
 
         TaskHandle_t query_obd_data_task = NULL;
     public:
@@ -43,6 +44,7 @@ class OBDMgr
         void SetCoolantTemp(uint16_t val);
         void SetVoltageLevel(uint16_t val);
         void SetRPM(uint16_t val);
+        void SetDistance(uint16_t val);
         void SetOBDStatus(int status);
         int GetOBDStatus(void);
 

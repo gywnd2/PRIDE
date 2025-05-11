@@ -7,6 +7,7 @@ struct ObdData {
     uint16_t coolant;
     uint16_t voltage;
     uint16_t rpm;
+    uint16_t distance;
 };
 
 enum ObdStatus {

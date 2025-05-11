@@ -86,9 +86,9 @@ void OBDMgr::ConnectBTTask(void *param)
 
 void OBDMgr::QueryCoolant(uint16_t &coolant_temp)
 {
+    Serial.println("[OBDMgr] QueryCoolant");
     while(true)
     {
-        Serial.println("[OBDMgr] QueryCoolant");
         float coolant = myELM327.engineCoolantTemp();
         if(myELM327.nb_rx_state == ELM_SUCCESS)
         {
@@ -114,9 +114,9 @@ void OBDMgr::QueryCoolant(uint16_t &coolant_temp)
 
 void OBDMgr::QueryVoltage(uint16_t &voltage_level)
 {
+    Serial.println("[OBDMgr] QueryVoltage");
     while(true)
     {
-        Serial.println("[OBDMgr] QueryVoltage");
         float voltage = myELM327.batteryVoltage();
         if(myELM327.nb_rx_state == ELM_SUCCESS)
         {
@@ -142,15 +142,10 @@ void OBDMgr::QueryVoltage(uint16_t &voltage_level)
 
 void OBDMgr::QueryRPM(uint16_t &rpm_value)
 {
-    ObdData data;
-
     Serial.println("[OBDMgr] QueryRPM");
-
     int rpm_retry_count = 0;
     while(true)
     {
-        data = GetObdData();
-
         float rpm = myELM327.rpm();
         if(myELM327.nb_rx_state == ELM_SUCCESS)
         {
@@ -184,6 +179,34 @@ void OBDMgr::QueryRPM(uint16_t &rpm_value)
     }
 }
 
+void OBDMgr::QueryDistAfterEcuBoot(uint16_t &distance)
+{
+    Serial.println("[OBDMgr] QueryDistAfterEcuBoot");
+    while(true)
+    {
+        uint16_t dist = myELM327.distSinceCodesCleared();
+        if(myELM327.nb_rx_state == ELM_SUCCESS)
+        {
+            distance = (uint16_t)dist;
+            break;
+        }
+        else if(myELM327.nb_rx_state == ELM_NO_DATA)
+        {
+            distance = OBD_QUERY_INVALID_RESPONSE;
+            break;
+        }
+        else if(myELM327.nb_rx_state == ELM_GETTING_MSG)
+        {
+            // Do nothing, wait for the response
+        }
+        else
+        {
+            Serial.println("[OBDMgr] Unexpected rx state in query distance "+String(myELM327.nb_rx_state));
+        }
+        delay(10);
+    }
+}
+
 ObdData OBDMgr::GetObdData(void)
 {
     return obd_data;
@@ -207,6 +230,12 @@ void OBDMgr::SetRPM(uint16_t val)
     obd_data.rpm = val;
 }
 
+void OBDMgr::SetDistance(uint16_t val)
+{
+    Serial.println("[OBDMgr] Set distance to "+String(val));
+    obd_data.distance = val;
+}
+
 void OBDMgr::SetOBDStatus(int status)
 {
     Serial.println("[OBDMgr] Set OBD status to "+String(status));
@@ -215,8 +244,7 @@ void OBDMgr::SetOBDStatus(int status)
 
 int OBDMgr::GetOBDStatus(void)
 {
-    //TEST
-
+    //TEST : goodbye after 3sec
     static int count = 0;
     if(count <= 3000) count++;
     Serial.println("[OBDMgr] Get OBD status count "+String(count));
@@ -242,6 +270,7 @@ void OBDMgr::QueryOBDData(void *param)
 
     unsigned long last_rpm_time = millis();      // 마지막 RPM 쿼리 시간
     unsigned long last_30sec_time = millis();   // 마지막 30초 쿼리 시간
+    unsigned long last_1min_12sec_time = millis();
 
     while (true)
     {
@@ -287,6 +316,25 @@ void OBDMgr::QueryOBDData(void *param)
             }
 
             last_30sec_time = current_time; // 마지막 30초 쿼리 시간 갱신
+        }
+
+        if (current_time - last_1min_12sec_time >= 72000)
+        {
+            Serial.println("[OBDMgr] QueryOBDData - Fuel Consumption Task");
+
+            if (self->obd_busy)
+            {
+                Serial.println("[OBDMgr] OBD is busy. Skip distance query.");
+            }
+            else
+            {
+                self->obd_busy = true;
+                self->QueryDistAfterEcuBoot(data.distance);
+                self->SetDistance(data.distance);
+                //TODO : calculate avg. fuel consumption
+
+                self->obd_busy = false;
+            }
         }
 
         if(self->myELM327.nb_rx_state == ELM_NO_DATA)
