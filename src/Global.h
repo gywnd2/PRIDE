@@ -20,6 +20,8 @@ CLK (Clock): GPIO 18
 MISO (Master In Slave Out): GPIO 19
 */
 
+#define OBD_SIMUL_MODE
+#define OBD_SIMUL_QUERY_TIME 5000
 #define SERIAL_BAUDRATE 115200
 #define WELCOME_TRACK_NUM 1
 #define GOODBYE_TRACK_NUM 2

@@ -31,8 +31,12 @@ class DisplayMgr
             Serial.println("~~~~DisplayMgr");
         }
 
+        TaskHandle_t update_display_task = NULL;
         void InitDisplay(void);
+        void ResetDisplay(void);
         static void ShowElapsedTime(void);
+        static void ShowFuelConsumption(void);
+        static void ShowDistance(void);
         static void ShowTripInfo(lv_timer_t * timer);
         static void ShowGoodbye(lv_timer_t * timer);
         static void UpdateDisplay(void* param);

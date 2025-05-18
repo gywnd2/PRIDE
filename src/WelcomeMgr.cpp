@@ -5,7 +5,7 @@ void WelcomeMgr::InitWelcome(void)
     Serial.println("[WelcomeMgr] Init");
     dfp.PlaySound(WELCOME_TRACK_NUM);
 
-    xTaskCreate(CheckGoodbyeCondition, "CheckGoodbyeCondition", 2048, this, 1, welcome_handler);
+    xTaskCreate(CheckGoodbyeCondition, "CheckGoodbyeCondition", 2048, this, 2, welcome_handler);
 }
 
 void WelcomeMgr::CheckGoodbyeCondition(void* param)
@@ -22,6 +22,7 @@ void WelcomeMgr::CheckGoodbyeCondition(void* param)
 
     while(true)
     {
+        vTaskDelay(pdTICKS_TO_MS(1000));
         static bool goodbye_played = false;
         if(goodbye_played)
         {
@@ -48,8 +49,6 @@ void WelcomeMgr::CheckGoodbyeCondition(void* param)
             NotifyPlaySound(GOODBYE_TRACK_NUM);
             goodbye_played = true;
         }
-
-        vTaskDelay(pdTICKS_TO_MS(100));
     }
 
 }

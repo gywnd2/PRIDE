@@ -30,12 +30,23 @@ void TripMgr::GetElapsedTime(char* buf)
                     elapsed_time, hour, minute, sec, buf);
 }
 
-void TripMgr::CalDistance(void)
+void TripMgr::GetDistance(char* buf)
 {
-
+    ObdData data = obd.GetObdData();
+    snprintf(buf, 9, "%d", data.distance);
+    Serial.printf("[TripMgr::GetDistance] Trip distance %d\n", data.distance);
 }
 
-void TripMgr::CalFuelConsumption(void)
+void TripMgr::GetFuelConsumption(char* buf)
 {
+    ObdData data = obd.GetObdData();
+    float fuel_used_liter = 0.0;
 
+    if (data.maf_rate > 0) {
+        float fuelRateLph = (data.maf_rate * 3600.0) / (14.7 * 745.0);
+        fuel_used_liter += (fuelRateLph * (end_time - start_time)/1000.0) / 3600.0;
+    }
+
+    snprintf(buf, 9, "%.2f", fuel_used_liter);
+    Serial.printf("[TripMgr::GetFuelConsumption] Used fuel in liter %f\n", fuel_used_liter);
 }

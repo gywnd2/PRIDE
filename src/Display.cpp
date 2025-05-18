@@ -160,17 +160,29 @@ void DisplayMgr::InitDisplay()
     isLvglInit = true;
     Serial.println("[DisplayMgr] UI initialized.");
 
-    xTaskCreate(UpdateDisplay, "UpdateDisplay", 4096, this, 1, NULL);
+    xTaskCreate(UpdateDisplay, "UpdateDisplay", 4096, this, 1, &update_display_task);
     Serial.println("[DisplayMgr] UpdateDisplay task created.");
 }
 
 void DisplayMgr::ShowElapsedTime(void)
 {
-    trip.SetEndTime(millis());
-
     char text_buf[9];
     trip.GetElapsedTime(text_buf);
     lv_label_set_text(ui_Time_value, text_buf);
+}
+
+void DisplayMgr::ShowFuelConsumption(void)
+{
+    char text_buf[9];
+    trip.GetFuelConsumption(text_buf);
+    lv_label_set_text(ui_Fuel_cons_value, text_buf);
+}
+
+void DisplayMgr::ShowDistance(void)
+{
+    char text_buf[9];
+    trip.GetDistance(text_buf);
+    lv_label_set_text(ui_Distance_value, text_buf);
 }
 
 void DisplayMgr::ShowTripInfo(lv_timer_t * timer)
@@ -187,8 +199,8 @@ void DisplayMgr::ShowGoodbye(lv_timer_t * timer)
 
 void DisplayMgr::UpdateDisplay(void *param)
 {
-    esp_task_wdt_delete(NULL);
     unsigned long start_time = millis();
+    esp_task_wdt_delete(NULL);
 
     while(true)
     {
@@ -202,23 +214,51 @@ void DisplayMgr::UpdateDisplay(void *param)
             {
                 lv_timer_t* trip_info_timer = lv_timer_create(ShowTripInfo, 0, NULL);
                 lv_timer_t* goodbye_timer = lv_timer_create(ShowGoodbye, 12000, NULL);
+                trip.SetEndTime(millis());
                 ShowElapsedTime();
-                //TODO
-                //ShowDistance();
-                //ShowFuelConsumption();
+                ShowDistance();
+                ShowFuelConsumption();
                 goodbye = true;
+                vTaskDelete(NULL);
+                return;
             }
-            continue;
         }
 
         unsigned long current_time = millis();
 
         ObdData data = obd.GetObdData();
-        char buffer[8];
 
         lv_bar_set_value(ui_bar_voltage, data.voltage, LV_ANIM_ON);
         lv_bar_set_value(ui_bar_coolant, data.coolant, LV_ANIM_ON);
 
+        /*
+        long anim_start_time = millis();
+        long anim_waiting_time = 0;
+        static int curr_voltage = 0;
+        static int curr_coolant = 0;
+
+        if(curr_voltage != data.voltage
+        || curr_coolant != data.coolant)
+        {
+            bool anim_start = false;
+            while(anim_waiting_time - anim_start_time < pdMS_TO_TICKS(3000))
+            {
+                Serial.printf("[DisplayMgr] Updating bar 3sec\n");
+                anim_waiting_time = millis();
+                if(not anim_start)
+                {
+                    lv_bar_set_value(ui_bar_voltage, (int32_t)data.voltage, LV_ANIM_ON);
+                    lv_bar_set_value(ui_bar_coolant, (int32_t)data.coolant, LV_ANIM_ON);
+                    anim_start = true;
+                }
+                lv_timer_handler();
+                vTaskDelay(5);
+            }
+
+            curr_voltage = data.voltage;
+            curr_coolant = data.coolant;
+        }
+        */
 
         // OBD Status
         lv_label_set_text(ui_obd_status, ObdString[obd.GetOBDStatus()].c_str());
@@ -230,7 +270,7 @@ void DisplayMgr::UpdateDisplay(void *param)
         if(current_time - start_time >= LOG_INTERVAL) // 10초 후 종료
         {
             Serial.printf("[DisplayMgr] UpdateDisplay / OBD Status %d / Voltage %d / Coolant %d / RPM %d\n",
-                         obd.GetOBDStatus(), data.voltage, data.coolant, data.rpm);
+                            obd.GetOBDStatus(), data.voltage, data.coolant, data.rpm);
             start_time = millis();
         }
 

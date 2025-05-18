@@ -30,8 +30,8 @@ class TripMgr
         void SetStartTime(unsigned long time);
         void SetEndTime(unsigned long time);
         void GetElapsedTime(char* buf);
-        void CalDistance(void);
-        void CalFuelConsumption(void);
+        void GetDistance(char* buf);
+        void GetFuelConsumption(char* buf);
 };
 
 #endif
