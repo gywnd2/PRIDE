@@ -195,7 +195,7 @@ void DisplayMgr::ShowDistance(void)
 
 void DisplayMgr::ShowTripInfo(lv_timer_t * timer)
 {
-    lv_scr_load_anim(ui_Goodbye, LV_SCR_LOAD_ANIM_FADE_ON, 2000, 0, true);
+    lv_scr_load_anim(ui_Goodbye, LV_SCR_LOAD_ANIM_FADE_ON, 2000, 0, false);
     lv_timer_del(timer);
 }
 
@@ -226,9 +226,8 @@ void DisplayMgr::UpdateDisplay(void *param)
                 ShowDistance();
                 ShowFuelConsumption();
                 goodbye = true;
-                vTaskDelete(NULL);
-                return;
             }
+            continue;
         }
 
         unsigned long current_time = millis();

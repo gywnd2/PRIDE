@@ -8,7 +8,7 @@
 
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 240
-#define SCREENBUFFER_SIZE_PIXELS 2048
+#define SCREENBUFFER_SIZE_PIXELS 4096
 
 static TFT_eSPI tft = TFT_eSPI(SCREEN_WIDTH, SCREEN_HEIGHT); // Invoke library, pins defined in User_Setup.h
 

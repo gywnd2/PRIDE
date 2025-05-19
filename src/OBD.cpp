@@ -336,11 +336,11 @@ void OBDMgr::SetOBDStatus(int status)
 
 int OBDMgr::GetOBDStatus(void)
 {
-#if 0
+#ifdef GOODBYE_TEST
     static int count = 0;
-    if(count <= 30000) count++;
+    if(count <= 20000) count++;
     if(count%10000 == 0) Serial.println("[OBDMgr] Get OBD status count "+String(count));
-    if(count >= 30000)
+    if(count >= 20000)
     {
         return OBD_DISCONNECTED;
     }
@@ -369,7 +369,7 @@ void OBDMgr::QueryOBDData(void *param)
         unsigned long current_time = millis();
 
         // 3초마다 RPM 쿼리
-        if (current_time - last_rpm_time >= pdMS_TO_TICKS(3000))
+        if (current_time - last_rpm_time >= pdMS_TO_TICKS(2000))
         {
             Serial.println("[OBDMgr] QueryOBDData - RPM Task");
 
@@ -383,9 +383,6 @@ void OBDMgr::QueryOBDData(void *param)
                 self->QueryRPM(data.rpm);
                 self->SetRPM(data.rpm);
 
-                self->QueryDistAfterErrorClear(data.distance);
-                self->SetDistance(data.distance);
-
                 self->obd_busy = false;
             }
 
@@ -393,7 +390,7 @@ void OBDMgr::QueryOBDData(void *param)
         }
 
         // 30초마다 Voltage와 Coolant 쿼리
-        if (current_time - last_30sec_time >= pdMS_TO_TICKS(30000))
+        if (current_time - last_30sec_time >= pdMS_TO_TICKS(60000))
         {
             Serial.println("[OBDMgr] QueryOBDData - Voltage and Coolant Task");
 
@@ -408,6 +405,8 @@ void OBDMgr::QueryOBDData(void *param)
                 self->SetVoltageLevel(data.voltage);
                 self->QueryCoolant(data.coolant);
                 self->SetCoolantTemp(data.coolant);
+                self->QueryDistAfterErrorClear(data.distance);
+                self->SetDistance(data.distance);
                 self->obd_busy = false;
             }
 
