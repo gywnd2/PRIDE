@@ -11,7 +11,7 @@ void OBDMgr::InitOBD(void)
     vTaskDelay(pdMS_TO_TICKS(100));
     Serial.println("[OBDMgr] BT delay success");
 
-    xTaskCreate(ConnectBTTask, "ConnectBTTask", 4096, this, 2, NULL);
+    xTaskCreatePinnedToCore(ConnectBTTask, "ConnectBTTask", 2048, this, 2, NULL, 1);
 }
 
 void OBDMgr::ConnectBTTask(void *param)
@@ -74,7 +74,7 @@ void OBDMgr::ConnectBTTask(void *param)
     }
 #endif
     Serial.println("[OBDMgr] ELM327 initialized successfully.");
-    xTaskCreate(QueryOBDData, "QueryOBDData", 8192, self, 3, &(self->query_obd_data_task));
+    xTaskCreatePinnedToCore(QueryOBDData, "QueryOBDData", 2048, self, 3, &(self->query_obd_data_task), 1);
     Serial.println("[OBDMgr] QueryOBDData task created successfully.");
     self->SetOBDStatus(OBD_CONNECTED);
     vTaskDelete(NULL);
@@ -383,13 +383,8 @@ void OBDMgr::QueryOBDData(void *param)
                 self->QueryRPM(data.rpm);
                 self->SetRPM(data.rpm);
 
-                vTaskDelay(pdMS_TO_TICKS(1500));
-
                 self->QueryDistAfterErrorClear(data.distance);
                 self->SetDistance(data.distance);
-                //TODO : calculate avg. maf_rate consumption
-                //self->QueryMaf(data.maf_rate);
-                //self->SetMafRate(data.maf_rate);
 
                 self->obd_busy = false;
             }
@@ -398,7 +393,7 @@ void OBDMgr::QueryOBDData(void *param)
         }
 
         // 30초마다 Voltage와 Coolant 쿼리
-        if (current_time - last_30sec_time >= pdMS_TO_TICKS(29000))
+        if (current_time - last_30sec_time >= pdMS_TO_TICKS(30000))
         {
             Serial.println("[OBDMgr] QueryOBDData - Voltage and Coolant Task");
 
@@ -411,9 +406,6 @@ void OBDMgr::QueryOBDData(void *param)
                 self->obd_busy = true;
                 self->QueryVoltage(data.voltage);
                 self->SetVoltageLevel(data.voltage);
-
-                vTaskDelay(pdMS_TO_TICKS(1500));
-
                 self->QueryCoolant(data.coolant);
                 self->SetCoolantTemp(data.coolant);
                 self->obd_busy = false;
@@ -445,7 +437,7 @@ void OBDMgr::QueryOBDData(void *param)
 
             last_1min_12sec_time = current_time;
         }
-            */
+        */
 
         if(self->GetOBDStatus() == OBD_DISCONNECTED)
         {

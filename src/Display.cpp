@@ -76,6 +76,11 @@ void play_bmp_animation() {
 }
 */
 
+void DisplayMgr::TouchInputCallback(lv_indev_t* indev, lv_indev_data_t* data)
+{
+    data->point.x = 0;
+    data->point.y = 0;
+}
 
 void DisplayMgr::InitDisplay()
 {
@@ -103,8 +108,11 @@ void DisplayMgr::InitDisplay()
     indev = lv_indev_create();
     Serial.println("[DisplayMgr] LVGL input device created.");
 
-    lv_indev_set_type( indev, LV_INDEV_TYPE_POINTER );
+    lv_indev_set_type(indev, LV_INDEV_TYPE_POINTER);
+    lv_indev_set_mode(indev, LV_INDEV_MODE_EVENT);
     Serial.println("[DisplayMgr] LVGL input device type set to pointer.");
+
+    lv_indev_set_read_cb(indev, TouchInputCallback);
 
     lv_tick_set_cb( my_tick_get_cb );
     Serial.println("[DisplayMgr] LVGL tick callback set.");
@@ -160,7 +168,7 @@ void DisplayMgr::InitDisplay()
     isLvglInit = true;
     Serial.println("[DisplayMgr] UI initialized.");
 
-    xTaskCreate(UpdateDisplay, "UpdateDisplay", 4096, this, 1, &update_display_task);
+    xTaskCreatePinnedToCore(UpdateDisplay, "UpdateDisplay", 4096, this, 1, &update_display_task, 0);
     Serial.println("[DisplayMgr] UpdateDisplay task created.");
 }
 
@@ -200,7 +208,6 @@ void DisplayMgr::ShowGoodbye(lv_timer_t * timer)
 void DisplayMgr::UpdateDisplay(void *param)
 {
     unsigned long start_time = millis();
-    esp_task_wdt_delete(NULL);
 
     while(true)
     {

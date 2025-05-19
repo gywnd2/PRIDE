@@ -5,7 +5,7 @@ void WelcomeMgr::InitWelcome(void)
     Serial.println("[WelcomeMgr] Init");
     dfp.PlaySound(WELCOME_TRACK_NUM);
 
-    xTaskCreate(CheckGoodbyeCondition, "CheckGoodbyeCondition", 2048, this, 2, welcome_handler);
+    xTaskCreatePinnedToCore(CheckGoodbyeCondition, "CheckGoodbyeCondition", 2048, this, 2, welcome_handler, 0);
 }
 
 void WelcomeMgr::CheckGoodbyeCondition(void* param)

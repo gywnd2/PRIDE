@@ -8,7 +8,7 @@
 
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 240
-#define SCREENBUFFER_SIZE_PIXELS 4096
+#define SCREENBUFFER_SIZE_PIXELS 2048
 
 static TFT_eSPI tft = TFT_eSPI(SCREEN_WIDTH, SCREEN_HEIGHT); // Invoke library, pins defined in User_Setup.h
 
@@ -19,6 +19,8 @@ class DisplayMgr
         lv_disp_t* disp;
         lv_indev_t* indev;
         lv_color_t buf [SCREENBUFFER_SIZE_PIXELS];
+        lv_indev_data_t* touch_coord;
+        TaskHandle_t update_display_task = NULL;
 
     public:
         DisplayMgr()
@@ -31,7 +33,7 @@ class DisplayMgr
             Serial.println("~~~~DisplayMgr");
         }
 
-        TaskHandle_t update_display_task = NULL;
+        static void TouchInputCallback(lv_indev_t* indev, lv_indev_data_t* data);
         void InitDisplay(void);
         void ResetDisplay(void);
         static void ShowElapsedTime(void);

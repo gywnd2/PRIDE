@@ -20,8 +20,5 @@ void setup ()
 
 void loop ()
 {
-    vTaskDelay(pdMS_TO_TICKS(100));
-    //eTaskState state = eTaskGetState(display.update_display_task);
 
-    //Serial.printf("Display State %d\n", state);
 }
