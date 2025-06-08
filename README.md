@@ -2,6 +2,7 @@
 ### OBD Dashboard
 - Bluetooth OBD Module(ELM327)
 - ESP32 Cheap Yellow Display (ESP32-2432S028)
+- DFPlayer mini
 
 ####  Function
 1. Play welcome sound when Key 'On' state
