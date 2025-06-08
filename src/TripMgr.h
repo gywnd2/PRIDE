@@ -2,7 +2,7 @@
 #define __TRIP__
 
 #include <Arduino.h>
-#include <pride_common.h>
+#include <CommonApi.h>
 #include <Global.h>
 
 class TripMgr

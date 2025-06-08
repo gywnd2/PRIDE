@@ -1,4 +1,4 @@
-#include <Widget.h>
+#include <WidgetMgr.h>
 
 float WidgetMgr::get_cpu_usage(void)
 {

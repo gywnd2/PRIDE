@@ -4,7 +4,7 @@
 #include <Arduino.h>
 #include <ui.h>
 #include "esp_task_wdt.h"
-#include <pride_common.h>
+#include <CommonApi.h>
 #include <Global.h>
 
 class WidgetMgr

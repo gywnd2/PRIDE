@@ -5,7 +5,7 @@
 #include <BluetoothSerial.h>
 #include <HardwareSerial.h>
 
-#define SOUND_VOLUME 25
+#define SOUND_VOLUME 30
 #define DFPLAYER_RX 27
 #define DFPLAYER_TX 22
 
@@ -15,7 +15,7 @@ class Mp3Mgr
         HardwareSerial dfpSerial;
         DFRobotDFPlayerMini dfPlayer;
         bool WelcomePlayed;
-    
+
     public:
         Mp3Mgr() : dfpSerial(1), WelcomePlayed(false)
         {
@@ -25,7 +25,7 @@ class Mp3Mgr
         {
             Serial.println("~~~~Mp3Mgr");
         }
-        
+
         bool InitMp3(void);
         void PlaySound(int track_num);
 };

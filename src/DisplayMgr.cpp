@@ -1,4 +1,4 @@
-#include <Display.h>
+#include <DisplayMgr.h>
 #include <SD.h>
 #include <Global.h>
 #include <esp_heap_caps.h>

@@ -5,12 +5,12 @@
 #include <BluetoothSerial.h>
 #include <lvgl.h>
 #include <Data.h>
-#include <MP3.h>
-#include <OBD.h>
+#include <MP3Mgr.h>
+#include <OBDMgr.h>
 #include <TripMgr.h>
-#include <Widget.h>
-#include <Display.h>
-#include <Storage.h>
+#include <WidgetMgr.h>
+#include <DisplayMgr.h>
+#include <StorageMgr.h>
 #include <WelcomeMgr.h>
 
 /*
